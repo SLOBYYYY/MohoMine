@@ -40,12 +40,3 @@ config :moho_mine, MohoMine.Repo,
   database: "moho_mine_dev",
   hostname: "localhost",
   pool_size: 10
-
-# Configure DB datasource
-config :moho_mine, MohoMine.DbDataSource,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "moho_mine_dev",
-  hostname: "localhost",
-  pool_size: 10

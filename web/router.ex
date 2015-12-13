@@ -21,7 +21,9 @@ defmodule MohoMine.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", MohoMine do
-  #   pipe_through :api
-  # end
+   scope "/api", MohoMine do
+     pipe_through :api
+
+     resources "/tenants", TenantController
+   end
 end
