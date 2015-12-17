@@ -18,6 +18,7 @@ defmodule MohoMine.Router do
 
     get "/", PageController, :index
     get "/dashboard", DashboardController, :index
+    get "/demo", DemoController, :index
   end
 
   # Other scopes may use custom stacks.

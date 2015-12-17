@@ -21,7 +21,12 @@ exports.config = {
       // }
     },
     stylesheets: {
-      joinTo: "css/app.css"
+      joinTo: "css/app.css",
+      order: {
+        before: [
+       	  "vendor/bootstrap.min.css"
+        ]
+	  }
     },
     templates: {
       joinTo: "js/app.js"
