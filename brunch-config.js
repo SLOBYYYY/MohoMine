@@ -4,7 +4,6 @@ exports.config = {
     javascripts: {
       joinTo: {
       	  "js/app.js": /^(web\/static\/js)|(deps)/,
-//"js/vendor.js": /^(web\/static\/vendor)|(deps)/
 		  "js/vendor.js": /^(web\/static\/vendor)/
 	  },
       order: {
