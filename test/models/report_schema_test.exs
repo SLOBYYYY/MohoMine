@@ -3,7 +3,7 @@ defmodule MohoMine.ReportSchemaTest do
 
   alias MohoMine.ReportSchema
 
-  @valid_attrs %{name: "some content", system_name: "some content"}
+  @valid_attrs %{name: "some content", system_name: "some content", data: "some data"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

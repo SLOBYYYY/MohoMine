@@ -4,11 +4,12 @@ defmodule MohoMine.ReportSchema do
   schema "report_schemas" do
     field :name, :string
     field :system_name, :string
+    field :data, :string
 
     timestamps
   end
 
-  @required_fields ~w(name system_name)
+  @required_fields ~w(name system_name data)
   @optional_fields ~w()
 
   @doc """

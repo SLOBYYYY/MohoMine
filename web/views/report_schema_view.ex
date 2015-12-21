@@ -12,6 +12,7 @@ defmodule MohoMine.ReportSchemaView do
   def render("report_schema.json", %{report_schema: report_schema}) do
     %{id: report_schema.id,
       name: report_schema.name,
-      system_name: report_schema.system_name}
+      system_name: report_schema.system_name,
+      data: report_schema.data}
   end
 end

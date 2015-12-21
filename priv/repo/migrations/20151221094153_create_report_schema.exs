@@ -3,11 +3,13 @@ defmodule MohoMine.Repo.Migrations.CreateReportSchema do
 
   def change do
     create table(:report_schemas) do
-      add :name, :string
-      add :system_name, :string
+      add :name, :string, null: false
+      add :system_name, :string, null: false
+      add :data, :string, null: false
 
       timestamps
     end
 
+    create unique_index(:report_schemas, [:system_name])
   end
 end
