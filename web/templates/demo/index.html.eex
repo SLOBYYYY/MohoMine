@@ -113,22 +113,6 @@
               <div class="panel-heading">Táblázatosan</div>
               <div class="panel-body">
                 <table id="top-10-product-table" class="display" width="100%"></table>
-                <!--
-                <table id="top-10-product-table">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Ft</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Omex</td>
-                      <td>330124</td>
-                    </tr>
-                  </tbody>
-                </table>
-                -->
               </div>
             </div>
             <!-- end panel -->

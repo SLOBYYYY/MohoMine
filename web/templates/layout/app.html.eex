@@ -64,7 +64,10 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="#"><i class="fa fa-dashboard fa-fw"></i> Műszerfal</a>
+                            <a href="dashboard"><i class="fa fa-dashboard fa-fw"></i> Műszerfal</a>
+                        </li>
+                        <li>
+                            <a href="demo"><i class="fa fa-table fa-fw"></i> Demo</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-table fa-fw"></i> Jelentések</a>
