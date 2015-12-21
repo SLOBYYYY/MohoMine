@@ -26,5 +26,6 @@ defmodule MohoMine.Router do
      pipe_through :api
 
      resources "/tenants", TenantController
+     resources "/report_schemas", ReportSchemaController
    end
 end

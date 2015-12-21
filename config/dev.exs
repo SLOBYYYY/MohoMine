@@ -37,6 +37,6 @@ config :moho_mine, MohoMine.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",
-  database: "moho_mine_dev",
+  database: "moho_mine",
   hostname: "localhost",
   pool_size: 10
