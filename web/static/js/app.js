@@ -16,4 +16,26 @@ $(document).ready(function () {
 
 	var bar_chart = document.getElementById("top-10-product-bar-chart");
 	Charts.top10ProductBarChart(bar_chart);
+
+	var getDataButton = $("#get-data");
+	getDataButton.click(function () {
+		$.ajax({
+			url: "/api/report_schemas",
+			type: "GET",
+			data: {
+				system_name: "top_10_product"
+			},
+			dataType: "json",
+			success: function (data) {
+				var data_array = data["data"];
+				for (var i = 0; i < data_array.length; i++) {
+					console.log(data["data"][i]);
+				}
+			},
+			error: function (xhr, status) {
+				console.log("SHIT!");
+				console.log(status);
+			}
+		});
+	});
 });

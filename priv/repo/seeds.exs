@@ -9,3 +9,13 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias MohoMine.Repo
+alias MohoMine.ReportSchema
+
+Repo.get_by(ReportSchema, system_name: "top_10_product") || 
+  Repo.insert(%ReportSchema{
+    system_name: "top_10_product", 
+    name: "Top 10 product",
+    data: "[\"Omex szuper 5\", 12412444], [\"Gladiator SL 10\", 634345634]"
+  })

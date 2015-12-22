@@ -17,7 +17,7 @@ defmodule MohoMine.ReportSchemaController do
       {:ok, report_schema} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", MohoMine.Router.Helpers.report_schema_path(conn, :show, report_schema))
+        |> put_resp_header("location", report_schema_path(conn, :show, report_schema))
         |> render("show.json", report_schema: report_schema)
       {:error, changeset} ->
         conn
@@ -26,8 +26,8 @@ defmodule MohoMine.ReportSchemaController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    report_schema = Repo.get!(ReportSchema, id)
+  def show(conn, %{"system_name" => system_name}) do
+    report_schema = Repo.get_by!(ReportSchema, %{system_name: system_name})
     render(conn, "show.json", report_schema: report_schema)
   end
 
