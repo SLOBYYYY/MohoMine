@@ -5,7 +5,7 @@ defmodule MohoMine.Repo.Migrations.CreateReportSchema do
     create table(:report_schemas) do
       add :name, :string, null: false
       add :system_name, :string, null: false
-      add :data, :string, null: false
+      add :data, :string, null: false, size: 1000
 
       timestamps
     end

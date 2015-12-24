@@ -4,7 +4,7 @@ defmodule MohoMine.ReportSchema do
   schema "report_schemas" do
     field :name, :string
     field :system_name, :string
-    field :data, :string
+    field :data, :string, size: 1000
 
     timestamps
   end
