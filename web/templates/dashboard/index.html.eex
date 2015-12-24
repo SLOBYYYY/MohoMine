@@ -12,7 +12,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">Top 10 termék 2015-ben</div>
         <div class="panel-body">
-          <div class="col-lg-6">
+          <div class="col-lg-6 col-md-12">
             <div class="panel panel-default">
               <div class="panel-heading">Grafikusan</div>
               <div class="panel-body">
@@ -20,7 +20,7 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-6">
+          <div class="col-lg-6 col-md-12">
             <div class="panel panel-default">
               <div class="panel-heading">Táblázatosan</div>
               <div class="panel-body">
