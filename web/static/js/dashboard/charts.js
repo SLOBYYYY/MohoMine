@@ -1,10 +1,6 @@
 let Charts = {
 	top10ProductBarChart (component) {
-		var data = [[1, 14929242], [2, 11167052], [3, 9118990], [4, 2193440], [5, 1764072], [6, 1509072], [7, 1223540], [8, 1159860], [9, 656172], [10, 635908]];
-		$.plot($(component), [{
-			data: data,
-			label: "Top 10 termék"
-		}], {
+		var options = {
 			series: {
 				bars: {
 					show: true,
@@ -15,8 +11,8 @@ let Charts = {
 				barWidth: 0.7
 			},
 			xaxis: {
-				ticks: [[1,"Omex általános lombtrágya"], [2, "Agrocean 20"], [3, "Omex Boron 20"], [4, "Calmax 20"], [5, "Omex Kingfol Zn 20"], [6, "Omex Ferti I. (16-09-26) 25"], [7, "Omex Starter (15-30-15) 25"], [8, "Omex Boron 5"], [9, "Agrocean 5"], [10, "Calmax 5"]],
-				axisLabel: "World Cities",
+				ticks: [],
+				axisLabel: "Termékek",
 				axisLabelUseCanvas: true,
 				axisLabelFontSizePixels: 12,
 				axisLabelFontFamily: 'Verdana, Arial',
@@ -35,14 +31,39 @@ let Charts = {
 			},
 			tooltip: true,
 			tooltipOpts: {
-				content: "%s - %y | %lx & %ly",
+				content: "%x - %y",
 				shifts: {
 					x: 20,
 					y: 0
 				},
 				defaultTheme: true
 			}
+		}
+
+		var barChart = $.plot($(component), {
+			data: []
+		}, options);
+
+		var updateBarPlot = function (result) {
+			var ticks = [];
+			var data = [];
+			$.each(result.data, function (index, value) {
+				ticks.push([index, value.name]);
+				data.push([index, value.total]);
+			});
+
+			options.xaxis.ticks = ticks;
+			$.plot($(component), [{data: data}], options);
+		};
+
+		$.ajax({
+			url: "/api/report_schemas/top_10_product",
+			type: "GET",
+			dataType: "json",
+			success: updateBarPlot
 		});
+
+
 	},
 
 	randomBarChart (componentId) {
