@@ -19,7 +19,7 @@ defmodule MohoMine.Mixfile do
   def application do
     [mod: {MohoMine, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex, :odbc]]
   end
 
   # Specifies which paths to compile per environment.
