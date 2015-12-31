@@ -2,7 +2,7 @@ defmodule MohoMine.DataSource.Firebird do
   @behaviour MohoMine.DataSource
 
   defmodule TopXOptions do
-    defstruct top_n: 10
+    defstruct top_n: 10, year: nil
   end
 
   def fetch(query_name) do
@@ -12,7 +12,7 @@ defmodule MohoMine.DataSource.Firebird do
   def fetch(query_name, options) when is_map(options) do
     result = case query_name do
       :top_x_product ->
-        options = Map.merge(options, %TopXOptions{})
+        options = Map.merge(%TopXOptions{}, options)
         query = query_top_x_product(options)
         start_odbc_query(query)
       _ ->
@@ -21,16 +21,24 @@ defmodule MohoMine.DataSource.Firebird do
     %{data: result}
   end
 
-  defp query_top_x_product(options), do: 'select first #{options.top_n} t.nev, round(sum(szt.eladar * szt.mennyiseg),0) as \"EladarSum\"
-                            from szamlatetel szt join
-                            termek t on t.id_termek = szt.id_termek join
-                            forgalmazo f on f.id_forgalmazo = t.id_forgalmazo
-                            group by t.nev
-                            order by \"EladarSum\" desc'
+  defp query_top_x_product(options) do 
+    #FIXME: Somehow if we join the table 'szamla' to the query, getting the 
+    # result for it jumpst up from ~500ms to 2000ms. Probably related to
+    # ODBC driver.
+    query = 'select first #{options.top_n} t.nev, round(sum(szt.eladar * szt.mennyiseg),0) as \"EladarSum\"
+             from szamlatetel szt join
+             szamla sz on sz.id_szamla = szt.id_szamla join
+             termek t on t.id_termek = szt.id_termek join
+             forgalmazo f on f.id_forgalmazo = t.id_forgalmazo'
+    if options.year do
+      query = query ++ ' where extract(year from sz.datum) = #{options.year}'
+    end
+    query ++ ' group by t.nev order by \"EladarSum\" desc'
+  end
 
   defp start_odbc_query(query) do
     firebird_env = Application.get_env(:moho_mine, :firebird)
-    case :odbc.connect('Driver=#{firebird_env[:driver]};Uid=#{firebird_env[:uid]};Pwd=#{firebird_env[:pwd]};Server=#{firebird_env[:server]};Port=#{firebird_env[:port]};Database=#{firebird_env[:database]}', []) do
+    case :odbc.connect('Driver=#{firebird_env[:driver]};Uid=#{firebird_env[:uid]};Pwd=#{firebird_env[:pwd]};Server=#{firebird_env[:server]};Port=#{firebird_env[:port]};Database=#{firebird_env[:database]}', [{:scrollable_cursors, :off}]) do
     {:ok, ref} ->
       query_res = :odbc.sql_query(ref, query)
       result = extract_query_results(query_res)

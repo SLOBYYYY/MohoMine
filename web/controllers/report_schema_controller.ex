@@ -29,7 +29,8 @@ defmodule MohoMine.ReportSchemaController do
   def show(conn, %{"system_name" => system_name}) do
     report_schema = case system_name do
       "top_10_product" ->
-        MohoMine.DataSource.Firebird.fetch(:top_x_product)
+        {{current_year,_,_}, {_,_,_}} = :calendar.universal_time
+        MohoMine.DataSource.Firebird.fetch(:top_x_product, %{year: current_year})
       _ -> 
         Repo.get_by!(ReportSchema, %{system_name: system_name})
     end
