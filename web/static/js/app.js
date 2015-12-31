@@ -16,9 +16,4 @@ $(document).ready(function () {
 
 	var bar_chart = document.getElementById("top-10-product-bar-chart");
 	Charts.top10ProductBarChart(bar_chart);
-
-	var getDataButton = $("#get-data");
-	getDataButton.click(function () {
-		Tables.refreshDataTable();
-	});
 });

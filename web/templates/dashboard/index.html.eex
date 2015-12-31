@@ -1,7 +1,6 @@
 <div class="row">
   <div class="col-lg-12">
     <h1 class="page-header">Műszerfal</h1>
-    <button id="get-data" class="btn btn-primary" type="submit">Get data!</button>
   </div>
   <!-- /.col-lg-12 -->
 </div>
@@ -9,34 +8,58 @@
 <%= link "Download", to: MohoMine.Router.Helpers.file_path(@conn, :download, "thefile") %>
 <%= link "Download - wrong", to: MohoMine.Router.Helpers.file_path(@conn, :download, "nonexisting") %>
 
-<div class="row">
-  <div class="col-lg-12">
-      <div class="panel panel-default">
-        <div class="panel-heading">Top 10 termék 2015-ben</div>
-        <div class="panel-body">
-          <div class="col-lg-6 col-md-12">
+<div>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#home" data-toggle="tab" role="tab" aria-controls="home">Főoldal</a>
+    </li>
+    <li role="presentation"><a href="#sales" data-toggle="tab" role="tab" aria-controls="sales">Pénzügy</a>
+    </li>
+    <li role="presentation"><a href="#agents" data-toggle="tab" role="tab" aria-controls="agents">Üzletkötők</a>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade in active" id="home" role="tabpanel">
+      <h4>Főoldal</h4>
+      <div class="row">
+        <div class="col-lg-12">
             <div class="panel panel-default">
-              <div class="panel-heading">Grafikusan</div>
+              <div class="panel-heading">Top 10 termék 2015-ben</div>
               <div class="panel-body">
-                <div id="top-10-product-bar-chart" style="width:100%;height:300px;"></div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Grafikusan</div>
+                    <div class="panel-body">
+                      <div id="top-10-product-bar-chart" style="width:100%;height:300px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Táblázatosan</div>
+                    <div class="panel-body">
+                      <table id="top-10-product-table" width="100%"></table>
+                    </div>
+                  </div>
+                  <!-- end panel -->
+                </div>
+                <!-- end col6 -->
               </div>
-            </div>
-          </div>
-          <div class="col-lg-6 col-md-12">
-            <div class="panel panel-default">
-              <div class="panel-heading">Táblázatosan</div>
-              <div class="panel-body">
-                <table id="top-10-product-table" width="100%"></table>
-              </div>
+              <!-- end panel body -->
             </div>
             <!-- end panel -->
-          </div>
-          <!-- end col6 -->
         </div>
-        <!-- end panel body -->
+        <!-- end col 12 -->
       </div>
-      <!-- end panel -->
+      <!-- end row -->
   </div>
-  <!-- end col 12 -->
+
+    <div class="tab-pane fade" id="sales" role="tabpanel">
+      <h4>Pénzügy</h4>
+    </div>
+
+    <div class="tab-pane fade" id="agents" role="tabpanel">
+      <h4>Üzletkötők</h4>
+    </div>
+  </div>
 </div>
-<!-- end row -->
