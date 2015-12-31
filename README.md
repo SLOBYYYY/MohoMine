@@ -49,10 +49,21 @@ Driver         = /usr/lib/libOdbcFb.so
 
 Now you are ready to connect to a Firebird database using the `Firebird` 
 datasource defined in the /etc/odbcinst.ini file. Erlang has odbc by default
-so it makes sense to use it. Try the following to connect:
+so it makes sense to use it.
 
+Add :odbc to mix.exs because it's a separate application that has to be started
+and stopped:
+```elixir
+def application do
+  [mod: {MohoMine, []},
+   applications: [:phoenix, :phoenix_html, :cowboy, :logger,
+				  :phoenix_ecto, :postgrex, :odbc]]
+end
 ```
-:odbc.start()
-{:ok, result} = :odbc.connect('Driver=Firebird;Uid=SYSDBA;Pwd=[your_password];Server=localhost;Port=3050;Database=/path_to_db/db_file.fdb', [])
-:odbc.stop()
+Try the following to connect:
+
+```elixir
+{:ok, ref} = :odbc.connect('Driver=Firebird;Uid=SYSDBA;Pwd=[your_password];Server=localhost;Port=3050;Database=/path_to_db/db_file.fdb', [])
+ ... do stuff
+ :odbc.disconnect(ref)
 ```
