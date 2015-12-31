@@ -12,24 +12,27 @@ defmodule MohoMine.DataSource.Firebird do
   def fetch(query_name, options) when is_map(options) do
     result = case query_name do
       :top_x_product ->
-        start_odbc_query(options)
+        options = Map.merge(options, %TopXOptions{})
+        query = query_top_x_product(options)
+        start_odbc_query(query)
       _ ->
         []
     end
     %{data: result}
   end
 
-  defp start_odbc_query(options) do
-    options = Map.merge(options, %TopXOptions{})
-    firebird_env = Application.get_env(:moho_mine, :firebird)
-    case :odbc.connect('Driver=#{firebird_env[:driver]};Uid=#{firebird_env[:uid]};Pwd=#{firebird_env[:pwd]};Server=#{firebird_env[:server]};Port=#{firebird_env[:port]};Database=#{firebird_env[:database]}', []) do
-    {:ok, ref} ->
-      query_res = :odbc.sql_query(ref, 'select first #{options.top_n} t.nev, round(sum(szt.eladar * szt.mennyiseg),0) as \"EladarSum\"
+  defp query_top_x_product(options), do: 'select first #{options.top_n} t.nev, round(sum(szt.eladar * szt.mennyiseg),0) as \"EladarSum\"
                             from szamlatetel szt join
                             termek t on t.id_termek = szt.id_termek join
                             forgalmazo f on f.id_forgalmazo = t.id_forgalmazo
                             group by t.nev
-                            order by \"EladarSum\" desc')
+                            order by \"EladarSum\" desc'
+
+  defp start_odbc_query(query) do
+    firebird_env = Application.get_env(:moho_mine, :firebird)
+    case :odbc.connect('Driver=#{firebird_env[:driver]};Uid=#{firebird_env[:uid]};Pwd=#{firebird_env[:pwd]};Server=#{firebird_env[:server]};Port=#{firebird_env[:port]};Database=#{firebird_env[:database]}', []) do
+    {:ok, ref} ->
+      query_res = :odbc.sql_query(ref, query)
       result = extract_query_results(query_res)
       :odbc.disconnect(ref)
     {:error, _} ->
@@ -38,6 +41,9 @@ defmodule MohoMine.DataSource.Firebird do
     {:ok, result} = Poison.encode result
     result
   end
+
+
+  
   
   defp extract_query_results(query_result) do
     # Only the 3rd part is interesting
