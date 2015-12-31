@@ -21,7 +21,8 @@ defmodule MohoMine.DataSource.Firebird do
 
   defp start_odbc_query(options) do
     options = Map.merge(options, %TopXOptions{})
-    case :odbc.connect('Driver=Firebird;Uid=SYSDBA;Pwd=PcL233yW;Server=localhost;Port=3050;Database=/databases/dbs_bosz_2015.fdb', []) do
+    firebird_env = Application.get_env(:moho_mine, :firebird)
+    case :odbc.connect('Driver=#{firebird_env[:driver]};Uid=#{firebird_env[:uid]};Pwd=#{firebird_env[:pwd]};Server=#{firebird_env[:server]};Port=#{firebird_env[:port]};Database=#{firebird_env[:database]}', []) do
     {:ok, ref} ->
       query_res = :odbc.sql_query(ref, 'select first #{options.top_n} t.nev, round(sum(szt.eladar * szt.mennyiseg),0) as \"EladarSum\"
                             from szamlatetel szt join

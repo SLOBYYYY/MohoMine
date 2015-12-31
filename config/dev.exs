@@ -40,3 +40,11 @@ config :moho_mine, MohoMine.Repo,
   database: "moho_mine",
   hostname: "localhost",
   pool_size: 10
+
+config :moho_mine, :firebird, 
+  driver: "Firebird",
+  uid: "SYSDBA",
+  pwd: "PcL233yW",
+  server: "localhost",
+  port: 3050,
+  database: "/databases/dbs_bosz_2015.fdb"
