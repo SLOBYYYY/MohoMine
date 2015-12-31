@@ -27,12 +27,11 @@ defmodule MohoMine.ReportSchemaController do
   end
 
   def show(conn, %{"system_name" => system_name}) do
-    report_schema = []
-    case system_name do
+    report_schema = case system_name do
       "top_10_product" ->
-        report_schema = MohoMine.DataSource.Firebird.fetch(:top_10_product)
+        MohoMine.DataSource.Firebird.fetch(:top_x_product)
       _ -> 
-        report_schema = Repo.get_by!(ReportSchema, %{system_name: system_name})
+        Repo.get_by!(ReportSchema, %{system_name: system_name})
     end
 
     render(conn, "show.json", report_schema: report_schema)

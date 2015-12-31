@@ -2,7 +2,13 @@ defmodule MohoMine.DataSource do
   use Behaviour
 
   @doc """
-  Fetches data from the given data source according to criteria
+  Fetches data from the given data source based on the 
+  name of the resource
   """
-  defcallback def fetch(filter) :: Map.t
+  @callback fetch(String.t) :: Map.t
+  @doc """
+  Fetches data from the given data source based on the name of the resource. 
+  Also passes options for the query to filter the results.
+  """
+  @callback fetch(String.t, Map.t) :: Map.t
 end

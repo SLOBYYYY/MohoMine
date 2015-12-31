@@ -1,21 +1,29 @@
 defmodule MohoMine.DataSource.Firebird do
   @behaviour MohoMine.DataSource
 
-  def fetch(filter) do
-    result = []
-    case filter do
-      :top_10_product ->
-        result = start_odbc_query
+  defmodule TopXOptions do
+    defstruct top_n: 10
+  end
+
+  def fetch(query_name) do
+    fetch(query_name, %{})
+  end
+
+  def fetch(query_name, options) when is_map(options) do
+    result = case query_name do
+      :top_x_product ->
+        start_odbc_query(options)
       _ ->
-        result = []
+        []
     end
     %{data: result}
   end
 
-  defp start_odbc_query do
+  defp start_odbc_query(options) do
+    options = Map.merge(options, %TopXOptions{})
     case :odbc.connect('Driver=Firebird;Uid=SYSDBA;Pwd=PcL233yW;Server=localhost;Port=3050;Database=/databases/dbs_bosz_2015.fdb', []) do
     {:ok, ref} ->
-      query_res = :odbc.sql_query(ref, 'select first 10 t.nev, round(sum(szt.eladar * szt.mennyiseg),0) as \"EladarSum\"
+      query_res = :odbc.sql_query(ref, 'select first #{options.top_n} t.nev, round(sum(szt.eladar * szt.mennyiseg),0) as \"EladarSum\"
                             from szamlatetel szt join
                             termek t on t.id_termek = szt.id_termek join
                             forgalmazo f on f.id_forgalmazo = t.id_forgalmazo
