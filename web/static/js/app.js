@@ -11,9 +11,9 @@ import Charts from "./dashboard/charts"
 $(document).ready(function () {
 	// Cannot use jquery call syntax here to get elements. It's funny because 
 	// $(document) ready is working..
-	var table = document.getElementById("top-10-product-table");
-	Tables.top10Table(table);
+	var table = document.getElementById("top-products-table");
+	Tables.topProductsTable(table);
 
-	var bar_chart = document.getElementById("top-10-product-bar-chart");
-	Charts.top10ProductBarChart(bar_chart);
+	var bar_chart = document.getElementById("top-products-bar-chart");
+	Charts.topProductsBarChart(bar_chart);
 });

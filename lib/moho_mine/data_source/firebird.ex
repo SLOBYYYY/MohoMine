@@ -11,9 +11,9 @@ defmodule MohoMine.DataSource.Firebird do
 
   def fetch(query_name, options) when is_map(options) do
     result = case query_name do
-      :top_x_product ->
+      :top_products ->
         options = Map.merge(%TopXOptions{}, options)
-        query = query_top_x_product(options)
+        query = query_top_products(options)
         start_odbc_query(query)
       _ ->
         []
@@ -21,7 +21,7 @@ defmodule MohoMine.DataSource.Firebird do
     %{data: result}
   end
 
-  defp query_top_x_product(options) do 
+  defp query_top_products(options) do 
     #FIXME: Somehow if we join the table 'szamla' to the query, getting the 
     # result for it jumpst up from ~500ms to 2000ms. Probably related to
     # ODBC driver.

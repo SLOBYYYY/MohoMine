@@ -1,5 +1,5 @@
 let Charts = {
-	top10ProductBarChart (component) {
+	topProductsBarChart (component) {
 		var options = {
 			series: {
 				bars: {
@@ -57,7 +57,7 @@ let Charts = {
 		};
 
 		$.ajax({
-			url: "/api/report_schemas/top_10_product",
+			url: "/api/report_schemas/top_products",
 			type: "GET",
 			dataType: "json",
 			success: updateBarPlot

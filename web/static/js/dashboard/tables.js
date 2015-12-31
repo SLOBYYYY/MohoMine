@@ -1,9 +1,9 @@
 let Tables = {
 	dataTable: null,
 
-	top10Table (component) {
+	topProductsTable (component) {
 		var setupData = {
-			ajax: "/api/report_schemas/top_10_product",
+			ajax: "/api/report_schemas/top_products",
 			columns: [
 				{
 					title: "Termék",
