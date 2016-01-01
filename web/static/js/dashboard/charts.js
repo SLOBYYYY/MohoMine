@@ -1,6 +1,6 @@
 let Charts = {
-	topProductsBarChart (component) {
-		var options = {
+	createDefaultOptionsForBarChart (axisLabel) {
+		return {
 			series: {
 				bars: {
 					show: true,
@@ -12,7 +12,7 @@ let Charts = {
 			},
 			xaxis: {
 				ticks: [],
-				axisLabel: "Termékek",
+				axisLabel: axisLabel,
 				axisLabelUseCanvas: true,
 				axisLabelFontSizePixels: 12,
 				axisLabelFontFamily: 'Verdana, Arial',
@@ -39,7 +39,8 @@ let Charts = {
 				defaultTheme: true
 			}
 		}
-
+	},
+	createDefaultBarChart (component, options, report_name) {
 		var barChart = $.plot($(component), {
 			data: []
 		}, options);
@@ -57,13 +58,19 @@ let Charts = {
 		};
 
 		$.ajax({
-			url: "/api/report_schemas/top_products",
+			url: "/api/report_schemas/" + report_name,
 			type: "GET",
 			dataType: "json",
 			success: updateBarPlot
 		});
-
-
+	},
+	topAgentsBarChart (component) {
+		var options = this.createDefaultOptionsForBarChart("Üzletkötők");
+		this.createDefaultBarChart(component, options, "top_agents");
+	},
+	topProductsBarChart (component) {
+		var options = this.createDefaultOptionsForBarChart("Termékek");
+		this.createDefaultBarChart(component, options, "top_products");
 	},
 
 	randomBarChart (componentId) {
