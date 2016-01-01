@@ -64,14 +64,14 @@ defmodule MohoMine.DataSource.Firebird do
     {:ok, result} = Poison.encode result
     result
   end
-
-
-  
   
   defp extract_query_results(query_result) do
     # Only the 3rd part is interesting
     {_type, _columns, result} = query_result
     result 
-    |> Enum.into([], fn {name, total} -> %{"name": :erlang.iolist_to_binary(name), "total": total} end)
+    |> Enum.into([], fn {name, total} -> 
+      %{ "name": :unicode.characters_to_binary(name, :latin1),
+         "total": total
+      } end)
   end
 end
