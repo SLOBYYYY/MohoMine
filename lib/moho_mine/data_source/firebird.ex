@@ -15,6 +15,10 @@ defmodule MohoMine.DataSource.Firebird do
         options = Map.merge(%TopXOptions{}, options)
         query = query_top_products(options)
         start_odbc_query(query)
+      :top_agents ->
+        options = Map.merge(%TopXOptions{}, options)
+        query = query_top_agents(options)
+        start_odbc_query(query)
       _ ->
         []
     end
@@ -34,6 +38,17 @@ defmodule MohoMine.DataSource.Firebird do
       query = query ++ ' where extract(year from sz.datum) = #{options.year}'
     end
     query ++ ' group by t.nev order by \"EladarSum\" desc'
+  end
+
+  defp query_top_agents(options) do
+    query = 'select first #{options.top_n} u.nev, round(sum(szt.eladar * szt.mennyiseg),0) as \"EladarSum\"
+             from szamlatetel szt join
+             szamla sz on sz.id_szamla = szt.id_szamla join
+             uzletkoto u on u.id_uzletkoto = sz.id_uzletkoto'
+    if options.year do
+      query = query ++ ' where extract(year from sz.datum) = #{options.year}'
+    end
+    query ++ ' group by u.nev order by \"EladarSum\" desc'
   end
 
   defp start_odbc_query(query) do
