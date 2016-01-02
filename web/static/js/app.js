@@ -6,8 +6,10 @@ import "deps/phoenix_html/web/static/js/phoenix_html"
 //
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
+import Formatter from "./formatter"
 import Tables from "./dashboard/tables"
 import Charts from "./dashboard/charts"
+
 $(document).ready(function () {
 	// Cannot use jquery call syntax here to get elements. It's funny because 
 	// $(document) ready is working..
@@ -20,3 +22,4 @@ $(document).ready(function () {
 	Charts.topProductsBarChart(top_products_bar_chart);
 	Charts.topAgentsBarChart(top_agents_bar_chart);
 });
+

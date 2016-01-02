@@ -20,7 +20,7 @@ let Charts = {
 			},
 			yaxis: {
 				tickFormatter: function (v, axis) {
-					return v + " Ft";
+					return v.formatMoney() + " Ft";
 				}
 			},
 			axisLabels: {

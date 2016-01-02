@@ -19,7 +19,10 @@ let Tables = {
 			paging: false,
 			searching: false,
 			lengthChange: false,
-			info: false
+			info: false,
+			createdRow: function (row, data, index) {
+				$('td', row).last().text(data.total.formatMoney());
+			}
 		};
 		this.dataTable = $(component).DataTable(setupData);
 	},
