@@ -61,7 +61,6 @@ defmodule MohoMine.DataSource.Firebird do
     {:error, _} ->
       raise "Cannot connect to database!"
     end
-    {:ok, result} = Poison.encode result
     result
   end
   

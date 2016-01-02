@@ -10,9 +10,6 @@ defmodule MohoMine.ReportSchemaView do
   end
 
   def render("report_schema.json", %{report_schema: report_schema}) do
-    {:ok, data} = Poison.decode report_schema.data
-    data
-    #TODO: Display the total value in a more readable fashion
-    #|> Enum.map(&(Dict.put(&1, "total", 123456)))
+    report_schema.data
   end
 end
