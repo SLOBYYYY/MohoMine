@@ -16,6 +16,7 @@ $(document).ready(function () {
 	var top_products_table = document.getElementById("top-products-table");
 	var top_agents_table = document.getElementById("top-agents-table");
 	Tables.topProductsTable(top_products_table);
+	Tables.topAgentsTable(top_agents_table);
 
 	var top_products_bar_chart = document.getElementById("top-products-bar-chart");
 	var top_agents_bar_chart = document.getElementById("top-agents-bar-chart");
