@@ -43,6 +43,17 @@ defmodule MohoMine.ReportSchemaController do
     render(conn, "show.json", report_schema: report_schema)
   end
 
+  def filter(conn, %{"system_name" => system_name, "filter" => filter}) do
+    result = case system_name do
+      "top_agents" ->
+        year = if(filter["year"] != "", do: filter["year"], else: 2015)
+        MohoMine.DataSource.Firebird.fetch(:top_agents, %{year: year})
+      _ ->
+        %{}
+    end
+    render conn, "show.json", report_schema: %{"data": result}
+  end
+
   def update(conn, %{"id" => id, "report_schema" => report_schema_params}) do
     report_schema = Repo.get!(ReportSchema, id)
     changeset = ReportSchema.changeset(report_schema, report_schema_params)

@@ -28,18 +28,35 @@
               <div class="panel-body">
                 <div class="row">
                   <div class="col-lg-12">
-                    <%= form_for @conn, dashboard_path(@conn, :index), [name: :filter, method: :get, class: "form-inline"], fn f -> %>
+                    <%= form_for @conn, report_schema_path(@conn, :filter, :top_agents), [id: :agent_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
                       <div class="form-group">
-                        <%= label f, :agent_filter_year, "Év" %>
-                        <%= text_input f, :agent_filter_year, class: "form-control" %>
+                        <%= label f, :year, "Év" %>
+                        <%= #date_select f, :agent_filter_year, default: "2016-01-01 01:01:01", class: "form-control" %>
+                        <%= text_input f, :year, class: "form-control" %>
                       </div>
                       <div class="form-group">
-                        <%= label f, :agent_filter_provider, "Forgalmazó" %>
-                        <%= text_input f, :agent_filter_provider, class: "form-control" %>
+                        <%= label f, :provider, "Forgalmazó" %>
+                        <%= text_input f, :provider, class: "form-control" %>
                       </div>
                       <div class="form-group">
                         <%= submit "Szűrés", class: "btn btn-primary" %>
                       </div>
+                      <script type="text/javascript">
+                        $(document).ready(function() {
+                          var form = $("#agent_filter");
+                          form.submit(function (e) {
+                            $.ajax({
+                              type: "POST",
+                              url: "<%= report_schema_path(@conn, :filter, :top_agents) %>",
+                              data: form.serialize(),
+                              success: function (data) {
+                                console.log(data.data);
+                              }
+                            });
+                            e.preventDefault();
+                          });
+                        });
+                      </script>
                     <% end %>
                   </div>
                 </div>
