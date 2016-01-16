@@ -50,7 +50,8 @@
                               url: "<%= report_schema_path(@conn, :filter, :top_agents) %>",
                               data: form.serialize(),
                               success: function (data) {
-                                console.log(data.data);
+                                var charts = require("web/static/js/dashboard/charts");
+                                charts.updateBarPlot("#top-agents-bar-chart", data.data, "Üzletkötők");
                               }
                             });
                             e.preventDefault();

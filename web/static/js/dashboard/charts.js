@@ -64,6 +64,19 @@ let Charts = {
 			success: updateBarPlot
 		});
 	},
+	updateBarPlot (component, result, title) {
+		var ticks = [];
+		var data = [];
+		$.each(result.data, function (index, value) {
+			ticks.push([index, value.name]);
+			data.push([index, value.total]);
+		});
+
+		//TODO: this is horrible like this!
+		var options = this.createDefaultOptionsForBarChart(title);
+		options.xaxis.ticks = ticks;
+		$.plot($(component), [{data: data}], options);
+	},
 	topAgentsBarChart (component) {
 		var options = this.createDefaultOptionsForBarChart("Üzletkötők");
 		this.createDefaultBarChart(component, options, "top_agents");
