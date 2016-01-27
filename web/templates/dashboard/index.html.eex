@@ -41,23 +41,6 @@
                       <div class="form-group">
                         <%= submit "Szűrés", class: "btn btn-primary" %>
                       </div>
-                      <script type="text/javascript">
-                        $(document).ready(function() {
-                          var form = $("#agent_filter");
-                          form.submit(function (e) {
-                            $.ajax({
-                              type: "POST",
-                              url: "<%= report_schema_path(@conn, :filter, :top_agents) %>",
-                              data: form.serialize(),
-                              success: function (data) {
-                                var charts = require("web/static/js/dashboard/charts");
-                                charts.updateBarPlot("#top-agents-bar-chart", data.data, "Üzletkötők");
-                              }
-                            });
-                            e.preventDefault();
-                          });
-                        });
-                      </script>
                     <% end %>
                   </div>
                 </div>

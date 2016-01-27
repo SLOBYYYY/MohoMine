@@ -41,53 +41,51 @@ let Charts = {
 		}
 	},
 	createDefaultBarChart (component, options, report_name) {
-		var barChart = $.plot($(component), {
+		let barChart = $.plot($(component), {
 			data: []
 		}, options);
-
-		var updateBarPlot = function (result) {
-			var ticks = [];
-			var data = [];
-			$.each(result.data, function (index, value) {
-				ticks.push([index, value.name]);
-				data.push([index, value.total]);
-			});
-
-			options.xaxis.ticks = ticks;
-			$.plot($(component), [{data: data}], options);
+		let that = this;
+		barChart.updateData = function (data) {
+			that.updateBarChart (barChart, data);
 		};
-
-		$.ajax({
-			url: "/api/report_schemas/" + report_name,
-			type: "GET",
-			dataType: "json",
-			success: updateBarPlot
-		});
+		return barChart;
 	},
-	updateBarPlot (component, result, title) {
-		var ticks = [];
-		var data = [];
+	updateBarChart (barChart, result) {
+		let ticks = [];
+		let data = [];
 		$.each(result.data, function (index, value) {
 			ticks.push([index, value.name]);
 			data.push([index, value.total]);
 		});
 
-		//TODO: this is horrible like this!
-		var options = this.createDefaultOptionsForBarChart(title);
-		options.xaxis.ticks = ticks;
-		$.plot($(component), [{data: data}], options);
+		let newOptions = barChart.getOptions();
+		newOptions.xaxes[0].ticks = ticks;
+		barChart = $.plot(barChart.getPlaceholder(), [{data: data}], newOptions);
+	},
+	genericBarChartCreator(component, title, reportName) {
+		let options = this.createDefaultOptionsForBarChart(title);
+		let barChart = this.createDefaultBarChart(component, options);
+
+		let that = this;
+		$.ajax({
+			url: `/api/report_schemas/${reportName}`,
+			type: "GET",
+			dataType: "json",
+			success: function (result) {
+				that.updateBarChart(barChart, result);
+			}
+		});
+		return barChart;
 	},
 	topAgentsBarChart (component) {
-		var options = this.createDefaultOptionsForBarChart("Üzletkötők");
-		this.createDefaultBarChart(component, options, "top_agents");
+		return this.genericBarChartCreator(component, "Üzletkötők", "top_agents");
 	},
 	topProductsBarChart (component) {
-		var options = this.createDefaultOptionsForBarChart("Termékek");
-		this.createDefaultBarChart(component, options, "top_products");
+		return this.genericBarChartCreator(component, "Termékek", "top_products");
 	},
 
 	randomBarChart (componentId) {
-		var barOptions = {
+		let barOptions = {
 			series: {
 				bars: {
 					show: true,
@@ -110,7 +108,7 @@ let Charts = {
 				content: "x: %x, y: %y"
 			}
 		};
-		var barData = {
+		let barData = {
 			label: "bar",
 			data: [
 				[1354521600000, 1000],
@@ -125,7 +123,7 @@ let Charts = {
 	}, 
 
 	randomPieChart (componentId) {
-		var data = [{
+		let data = [{
 			label: "Series 0",
 		data: 1
 		}, {
@@ -139,7 +137,7 @@ let Charts = {
 		data: 20
 		}];
 
-		var pieOptions = {
+		let pieOptions = {
 			series: {
 				pie: {
 					show: true
@@ -162,8 +160,8 @@ let Charts = {
 	},
 
 	randomLineChart (componentId) {
-		var data = [];
-		for (var i = 0; i < 15; i+=0.5) {
+		let data = [];
+		for (let i = 0; i < 15; i+=0.5) {
 			data.push([i, Math.sin(i)]);
 		}
 		$.plot($("#" + componentId), [{
