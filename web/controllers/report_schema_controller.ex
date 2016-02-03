@@ -51,7 +51,7 @@ defmodule MohoMine.ReportSchemaController do
       _ ->
         %{}
     end
-    render conn, "show.json", report_schema: %{"data": result}
+    render(conn, "show.json", report_schema: result)
   end
 
   def update(conn, %{"id" => id, "report_schema" => report_schema_params}) do

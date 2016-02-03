@@ -1,55 +1,69 @@
-let Charts = {
-	createDefaultOptionsForBarChart (axisLabel) {
-		return {
-			series: {
-				bars: {
-					show: true,
-				}
-			},
+function createDefaultOptionsForBarChart (axisLabel) {
+	return {
+		series: {
 			bars: {
-				align: "center",
-				barWidth: 0.7
-			},
-			xaxis: {
-				ticks: [],
-				axisLabel: axisLabel,
-				axisLabelUseCanvas: true,
-				axisLabelFontSizePixels: 12,
-				axisLabelFontFamily: 'Verdana, Arial',
-				axisLabelPadding: 10,
-			},
-			yaxis: {
-				tickFormatter: function (v, axis) {
-					return v.formatMoney() + " Ft";
-				}
-			},
-			axisLabels: {
-				show: true
-			},
-			grid: {
-				hoverable: true
-			},
-			tooltip: true,
-			tooltipOpts: {
-				content: "%x - %y",
-				shifts: {
-					x: 20,
-					y: 0
-				},
-				defaultTheme: true
+				show: true,
 			}
+		},
+		bars: {
+			align: "center",
+			barWidth: 0.7
+		},
+		xaxis: {
+			ticks: [],
+			axisLabel: axisLabel,
+			axisLabelUseCanvas: true,
+			axisLabelFontSizePixels: 12,
+			axisLabelFontFamily: 'Verdana, Arial',
+			axisLabelPadding: 10,
+		},
+		yaxis: {
+			tickFormatter: function (v, axis) {
+				return v.formatMoney() + " Ft";
+			}
+		},
+		axisLabels: {
+			show: true
+		},
+		grid: {
+			hoverable: true
+		},
+		tooltip: true,
+		tooltipOpts: {
+			content: "%x - %y",
+			shifts: {
+				x: 20,
+				y: 0
+			},
+			defaultTheme: true
 		}
-	},
-	createDefaultBarChart (component, options, report_name) {
-		let barChart = $.plot($(component), {
-			data: []
-		}, options);
-		let that = this;
-		barChart.updateData = function (data) {
-			that.updateBarChart (barChart, data);
-		};
-		return barChart;
-	},
+	}
+}
+function createDefaultBarChart (component, options, report_name) {
+	let barChart = $.plot($(component), {
+		data: []
+	}, options);
+	barChart.updateData = function (data) {
+		Charts.updateBarChart (barChart, data);
+	};
+	return barChart;
+}
+function genericBarChartCreator(component, title, reportName) {
+	let options = createDefaultOptionsForBarChart(title);
+	let barChart = createDefaultBarChart(component, options);
+
+	$.ajax({
+		url: `/api/report_schemas/${reportName}`,
+		type: "GET",
+		dataType: "json",
+		success: function (result) {
+			Charts.updateBarChart(barChart, result);
+		}
+	});
+	return barChart;
+}
+
+let Charts = {
 	updateBarChart (barChart, result) {
 		let ticks = [];
 		let data = [];
@@ -62,26 +76,11 @@ let Charts = {
 		newOptions.xaxes[0].ticks = ticks;
 		barChart = $.plot(barChart.getPlaceholder(), [{data: data}], newOptions);
 	},
-	genericBarChartCreator(component, title, reportName) {
-		let options = this.createDefaultOptionsForBarChart(title);
-		let barChart = this.createDefaultBarChart(component, options);
-
-		let that = this;
-		$.ajax({
-			url: `/api/report_schemas/${reportName}`,
-			type: "GET",
-			dataType: "json",
-			success: function (result) {
-				that.updateBarChart(barChart, result);
-			}
-		});
-		return barChart;
-	},
 	topAgentsBarChart (component) {
-		return this.genericBarChartCreator(component, "Üzletkötők", "top_agents");
+		return genericBarChartCreator(component, "Üzletkötők", "top_agents");
 	},
 	topProductsBarChart (component) {
-		return this.genericBarChartCreator(component, "Termékek", "top_products");
+		return genericBarChartCreator(component, "Termékek", "top_products");
 	},
 
 	randomBarChart (componentId) {

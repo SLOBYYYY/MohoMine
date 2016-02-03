@@ -14,15 +14,11 @@ $(document).ready(function () {
 	// Cannot use jquery call syntax here to get elements. It's funny because 
 	// $(document) ready is working..
 	
-	//let top_products_table = $("#top-products-table");
-	//let top_agents_table = $("#top-agents-table");
-	//Tables.topProductsTable(top_products_table);
-	//Tables.topAgentsTable(top_agents_table);
+	let topProductsTable = Tables.topProductsTable($("#top-products-table"));
+	let topAgentsTable = Tables.topAgentsTable($("#top-agents-table"));
 
-	let top_products_bar_chart = $("#top-products-bar-chart");
-	let top_agents_bar_chart = $("#top-agents-bar-chart");
-	let topProducts = Charts.topProductsBarChart(top_products_bar_chart);
-	let topAgents = Charts.topAgentsBarChart(top_agents_bar_chart);
+	let topProductsChart = Charts.topProductsBarChart($("#top-products-bar-chart"));
+	let topAgentsChart = Charts.topAgentsBarChart($("#top-agents-bar-chart"));
 
 	//Initializer.initializeDashboard();
 	let form = $("#agent_filter");
@@ -32,7 +28,8 @@ $(document).ready(function () {
 			url: "/api/report_schemas/top_agents",
 			data: form.serialize(),
 			success: function (data) {
-				topAgents.updateData(data.data);
+				topAgentsChart.updateData(data);
+				topAgentsTable.updateData(data.data);
 				//var tables = require("web/static/js/dashboard/tables");
 				//tables.refreshDataTable($("#top-agents-table"));
 			}
