@@ -13,6 +13,12 @@ function setCustomObjects (dataTable, options, originalComponent) {
 	dataTable.originalComponent = originalComponent;
 }
 
+function createDataTable(component, options) {
+	let d = $(component).DataTable($.extend({}, options));
+	setCustomObjects(d, options, component);
+	return d;
+}
+
 function genericDataTableCreator (component, options) {
 	let defaultOptions = createDefaultOptionsForDataTable();
 	let finalOptions = $.extend(defaultOptions, options);
@@ -33,7 +39,7 @@ function genericDataTableCreator (component, options) {
 			});
 			let newData = { data: transformedData, destroy: true };
 			let newOptions = $.extend(finalOptions, newData);
-			dataTable = $(component).DataTable(newOptions);
+			dataTable = createDataTable(component, newOptions);
 		}
 	});
 
@@ -89,17 +95,15 @@ let Tables = {
 	},
 	updateDataTable(dataTable, data) {
 		let transformedData = [];
-		if (data.length !== 0) {
-			transformedData = $.map(data, function (value, key) {
+		if (data.data.length !== 0) {
+			transformedData = $.map(data.data, function (value, key) {
 				return [[value.name, value.total]];
 			});
 		}
 		let newData = { data: transformedData, destroy: true };
 		let newOptions = $.extend(dataTable.options, newData);
 
-		let newDataTable = $(dataTable.originalComponent).DataTable($.extend({}, newOptions));
-		setCustomObjects(newDataTable, newOptions, dataTable.originalComponent);
-		dataTable = newDataTable;
+		dataTable = createDataTable(dataTable.originalComponent, newOptions);
 	}
 }
 export default Tables

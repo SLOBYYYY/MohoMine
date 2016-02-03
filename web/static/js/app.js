@@ -29,9 +29,7 @@ $(document).ready(function () {
 			data: form.serialize(),
 			success: function (data) {
 				topAgentsChart.updateData(data);
-				topAgentsTable.updateData(data.data);
-				//var tables = require("web/static/js/dashboard/tables");
-				//tables.refreshDataTable($("#top-agents-table"));
+				topAgentsTable.updateData(data);
 			}
 		});
 		e.preventDefault();
