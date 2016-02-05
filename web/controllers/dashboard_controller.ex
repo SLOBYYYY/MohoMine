@@ -4,4 +4,9 @@ defmodule MohoMine.DashboardController do
   def index(conn, _params) do
     render conn, "index.html"
   end
+  
+  def providers(conn, _params) do
+    providers = MohoMine.DataSource.Firebird.fetch(:providers)
+    render conn, "providers.json", providers: providers
+  end
 end

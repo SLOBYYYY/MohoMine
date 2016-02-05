@@ -23,12 +23,13 @@ defmodule MohoMine.Router do
   end
 
   # Other scopes may use custom stacks.
-   scope "/api", MohoMine do
-     pipe_through :api
+  scope "/api", MohoMine do
+    pipe_through :api
 
-     resources "/tenants", TenantController
-     resources "/report_schemas", ReportSchemaController, except: [:show]
-     resources "/report_schemas", ReportSchemaController, param: "system_name", only: [:show]
-     post "/report_schemas/:system_name", ReportSchemaController, :filter
-   end
+    resources "/tenants", TenantController
+    resources "/report_schemas", ReportSchemaController, except: [:show]
+    resources "/report_schemas", ReportSchemaController, param: "system_name", only: [:show]
+    post "/report_schemas/:system_name", ReportSchemaController, :filter
+    get "/dashboard", DashboardController, :providers
+  end
 end

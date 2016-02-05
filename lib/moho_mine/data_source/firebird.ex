@@ -26,6 +26,10 @@ defmodule MohoMine.DataSource.Firebird do
     apply_transformation(result)
   end
 
+  defp query_providers do
+    'select id_forgalmazo, nev from forgalmazo order by nev'
+  end
+
   defp query_top_products(options) do 
     #FIXME: Somehow if we join the table 'szamla' to the query, getting the 
     # result for it jumpst up from ~500ms to 2000ms. Probably related to
