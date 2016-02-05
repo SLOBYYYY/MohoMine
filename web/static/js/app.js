@@ -11,9 +11,6 @@ import Tables from "./dashboard/tables"
 import Charts from "./dashboard/charts"
 
 $(document).ready(function () {
-	// Cannot use jquery call syntax here to get elements. It's funny because 
-	// $(document) ready is working..
-	
 	let topProductsTable = Tables.topProductsTable($("#top-products-table"));
 	let topAgentsTable = Tables.topAgentsTable($("#top-agents-table"));
 
@@ -33,6 +30,23 @@ $(document).ready(function () {
 			}
 		});
 		e.preventDefault();
+	});
+
+	$.ajax({
+		type: "GET",
+		url: "/api/dashboard",
+		success: function (data) {
+			let providerSelect = $("#filter_provider");
+			$.each(data, function (key, value) {
+				providerSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
+			});
+			providerSelect.select2({
+				theme: "classic",
+				allowClear: true,
+				placeholder: "Válasszon egy szolgáltatót"
+			});
+			providerSelect.val(null).trigger("change");
+		}
 	});
 });
 

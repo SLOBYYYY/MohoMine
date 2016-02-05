@@ -36,7 +36,7 @@
                       </div>
                       <div class="form-group">
                         <%= label f, :provider, "Forgalmazó" %>
-                        <%= text_input f, :provider, class: "form-control" %>
+                        <%= select f, :provider, [], class: "form-control" %>
                       </div>
                       <div class="form-group">
                         <%= submit "Szűrés", class: "btn btn-primary" %>
