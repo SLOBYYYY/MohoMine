@@ -10,6 +10,11 @@ defmodule MohoMine.ReportSchemaView do
   end
 
   def render("report_schema.json", %{report_schema: report_schema}) do
-    report_schema.data
+    report_schema
+    |> Enum.into([], fn { name, total } ->
+      %{
+        "name": name,
+        "total": total
+      } end)
   end
 end
