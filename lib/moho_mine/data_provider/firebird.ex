@@ -1,4 +1,4 @@
-defmodule MohoMine.DataSource.Firebird do
+defmodule MohoMine.DataProvider.Firebird do
   def fetch(query) do
     result = start_odbc_query(query)
     apply_transformation(result)

@@ -47,7 +47,7 @@ defmodule MohoMine.ReportSchemaController do
     filter = convert_filter_strings_to_atom(filter)
     result = case system_name do
       "top_agents" ->
-        MohoMine.DataSource.Firebird.fetch(:top_agents, filter)
+        MohoMine.DataAccess.get_top_agents(filter)
       _ ->
         %{}
     end

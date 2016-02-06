@@ -1,5 +1,5 @@
 defmodule MohoMine.DataAccess do
-  alias MohoMine.DataSource.Firebird
+  alias MohoMine.DataProvider.Firebird
 
   defmodule TopXOptions do
     defstruct top_n: 10, year: nil, provider: nil
