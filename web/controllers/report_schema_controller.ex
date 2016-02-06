@@ -44,14 +44,19 @@ defmodule MohoMine.ReportSchemaController do
   end
 
   def filter(conn, %{"system_name" => system_name, "filter" => filter}) do
+    filter = convert_filter_strings_to_atom(filter)
     result = case system_name do
       "top_agents" ->
-        year = if(filter["year"] != "", do: filter["year"], else: 2015)
-        MohoMine.DataSource.Firebird.fetch(:top_agents, %{year: year})
+        MohoMine.DataSource.Firebird.fetch(:top_agents, filter)
       _ ->
         %{}
     end
     render(conn, "show.json", report_schema: result)
+  end
+
+  defp convert_filter_strings_to_atom(filter) do
+    filter 
+    |> Enum.reduce(%{}, fn ({key, value}, acc) -> Map.put(acc, String.to_atom(key), value) end)
   end
 
   def update(conn, %{"id" => id, "report_schema" => report_schema_params}) do
