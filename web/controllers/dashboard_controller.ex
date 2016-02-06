@@ -6,7 +6,7 @@ defmodule MohoMine.DashboardController do
   end
   
   def providers(conn, _params) do
-    providers = MohoMine.DataSource.Firebird.fetch(:providers)
+    providers = MohoMine.DataAccess.get_providers
     render conn, "providers.json", providers: providers
   end
 end

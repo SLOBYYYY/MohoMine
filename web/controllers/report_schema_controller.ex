@@ -31,11 +31,11 @@ defmodule MohoMine.ReportSchemaController do
       "top_products" ->
         #{{current_year,_,_}, _} = :calendar.universal_time
         current_year = 2015
-        MohoMine.DataSource.Firebird.fetch(:top_products, %{year: current_year})
+        MohoMine.DataAccess.get_top_products(%{year: current_year})
       "top_agents" ->
         #{{current_year,_,_}, _} = :calendar.universal_time
         current_year = 2015
-        MohoMine.DataSource.Firebird.fetch(:top_agents, %{year: current_year})
+        MohoMine.DataAccess.get_top_agents(%{year: current_year})
       _ -> 
         Repo.get_by!(ReportSchema, %{system_name: system_name})
     end
