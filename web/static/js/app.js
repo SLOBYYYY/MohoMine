@@ -32,11 +32,25 @@ $(document).ready(function () {
 		e.preventDefault();
 	});
 
+	let form_product_filter = $("#product_filter");
+	form_product_filter.submit(function (e) {
+		$.ajax({
+			type: "POST",
+			url: "/api/report_schemas/top_products",
+			data: form_product_filter.serialize(),
+			success: function (data) {
+				topProductsChart.updateData(data);
+				topProductsTable.updateData(data);
+			}
+		});
+		e.preventDefault();
+	});
+
 	$.ajax({
 		type: "GET",
 		url: "/api/dashboard",
 		success: function (data) {
-			let providerSelect = $("#filter_provider");
+			let providerSelect = $('[name="filter[provider]"]');
 			$.each(data, function (key, value) {
 				providerSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
 			});

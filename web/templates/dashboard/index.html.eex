@@ -78,6 +78,25 @@
             <div class="panel panel-primary">
               <div class="panel-heading">Top termékek 2015-ben</div>
               <div class="panel-body">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div data-filter>
+                    </div>
+                    <%= form_for @conn, report_schema_path(@conn, :filter, :top_products), [id: :product_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
+                      <div class="form-group">
+                        <%= label f, :year, "Év" %>
+                        <%= text_input f, :year, class: "form-control" %>
+                      </div>
+                      <div class="form-group">
+                        <%= label f, :provider, "Forgalmazó" %>
+                        <%= select f, :provider, [], class: "form-control" %>
+                      </div>
+                      <div class="form-group">
+                        <%= submit "Szűrés", class: "btn btn-primary" %>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
                 <div class="col-lg-6 col-md-12">
                   <div class="panel panel-default">
                     <div class="panel-heading">Grafikusan</div>
