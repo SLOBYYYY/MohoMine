@@ -44,8 +44,10 @@ defmodule MohoMine.ReportSchemaController do
   end
 
   def filter(conn, %{"system_name" => system_name, "filter" => filter}) do
-    filter = convert_filter_strings_to_atom(filter)
+    filter = sanitize_filter(filter)
     result = case system_name do
+      "top_products" ->
+        MohoMine.DataAccess.get_top_products(filter)
       "top_agents" ->
         MohoMine.DataAccess.get_top_agents(filter)
       _ ->
@@ -54,8 +56,11 @@ defmodule MohoMine.ReportSchemaController do
     render(conn, "show.json", report_schema: result)
   end
 
-  defp convert_filter_strings_to_atom(filter) do
+  defp sanitize_filter(filter) do
     filter 
+    # Remove empty values
+    |> Enum.filter(fn {_key, value} -> value != "" end)
+    # Convert string keys to atoms
     |> Enum.reduce(%{}, fn ({key, value}, acc) -> Map.put(acc, String.to_atom(key), value) end)
   end
 
