@@ -53,9 +53,10 @@ function genericBarChartCreator(component, title, reportName) {
 	let barChart = createDefaultBarChart(component, options);
 
 	$.ajax({
-		url: `/api/report_schemas/${reportName}`,
+		url: `/api/dashboard/${reportName}`,
 		type: "GET",
 		dataType: "json",
+		data: {},
 		success: function (result) {
 			Charts.updateBarChart(barChart, result);
 		}

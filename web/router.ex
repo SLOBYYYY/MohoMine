@@ -27,9 +27,8 @@ defmodule MohoMine.Router do
     pipe_through :api
 
     resources "/tenants", TenantController
-    resources "/report_schemas", ReportSchemaController, except: [:show]
-    resources "/report_schemas", ReportSchemaController, param: "system_name", only: [:show]
-    post "/report_schemas/:system_name", ReportSchemaController, :filter
-    get "/dashboard", DashboardController, :providers
+    get "/dashboard/providers", DashboardController, :providers
+    get "/dashboard/top_products", DashboardController, :top_products
+    get "/dashboard/top_agents", DashboardController, :top_agents
   end
 end

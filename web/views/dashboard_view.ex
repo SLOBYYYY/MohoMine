@@ -2,11 +2,32 @@ defmodule MohoMine.DashboardView do
   use MohoMine.Web, :view
 
   def render("providers.json", %{providers: providers}) do
-    providers
-    |> Enum.into([], fn { id, name } ->
+    providers_converted = 
+      Enum.into(providers, [], fn { id, name } ->
+        %{
+          "id": id,
+          "name": name
+        } end
+      )
+    %{"data": providers_converted}
+  end
+
+  def render("top_products.json", %{products: products}) do
+    products_converted = convert_to_table(products)
+    %{"data": products_converted}
+  end
+
+  def render("top_agents.json", %{agents: agents}) do
+    agents_converted = convert_to_table(agents)
+    %{"data": agents_converted}
+  end
+
+  defp convert_to_table(data) do
+    data
+    |> Enum.into([], fn { name, total } ->
       %{
-        "id": id,
-        "name": name
+        "name": name,
+        "total": total
       } end)
   end
 end

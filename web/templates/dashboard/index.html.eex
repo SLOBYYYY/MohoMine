@@ -29,6 +29,7 @@
                 <div class="row">
                   <div class="col-lg-12">
                     <%= form_for @conn, report_schema_path(@conn, :filter, :top_agents), [id: :agent_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
+                    <%= form_for @conn, dashboard_path(@conn, :top_agents), [id: :agent_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
                       <div class="form-group">
                         <%= label f, :year, "Év" %>
                         <%= #date_select f, :agent_filter_year, default: "2016-01-01 01:01:01", class: "form-control" %>
@@ -82,7 +83,7 @@
                   <div class="col-lg-12">
                     <div data-filter>
                     </div>
-                    <%= form_for @conn, report_schema_path(@conn, :filter, :top_products), [id: :product_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
+                    <%= form_for @conn, dashboard_path(@conn, :top_products), [id: :product_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
                       <div class="form-group">
                         <%= label f, :year, "Év" %>
                         <%= text_input f, :year, class: "form-control" %>

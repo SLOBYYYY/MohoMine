@@ -30,9 +30,10 @@ function genericDataTableCreator (component, options) {
 	}
 
 	$.ajax({
-		url: `/api/report_schemas/${finalOptions.reportName}`,
+		url: `/api/dashboard/${finalOptions.reportName}`,
 		type: "GET",
 		dataType: "json",
+		data: {},
 		success: function (result) {
 			let transformedData = $.map(result.data, function (value, key) {
 				return [[value.name, value.total]];

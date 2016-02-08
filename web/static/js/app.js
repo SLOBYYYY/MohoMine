@@ -21,12 +21,12 @@ $(document).ready(function () {
 	let form = $("#agent_filter");
 	form.submit(function (e) {
 		$.ajax({
-			type: "POST",
-			url: "/api/report_schemas/top_agents",
+			type: "GET",
+			url: "/api/dashboard/top_agents",
 			data: form.serialize(),
-			success: function (data) {
-				topAgentsChart.updateData(data);
-				topAgentsTable.updateData(data);
+			success: function (result) {
+				topAgentsChart.updateData(result);
+				topAgentsTable.updateData(result);
 			}
 		});
 		e.preventDefault();
@@ -35,12 +35,12 @@ $(document).ready(function () {
 	let form_product_filter = $("#product_filter");
 	form_product_filter.submit(function (e) {
 		$.ajax({
-			type: "POST",
-			url: "/api/report_schemas/top_products",
+			type: "GET",
+			url: "/api/dashboard/top_products",
 			data: form_product_filter.serialize(),
-			success: function (data) {
-				topProductsChart.updateData(data);
-				topProductsTable.updateData(data);
+			success: function (result) {
+				topProductsChart.updateData(result);
+				topProductsTable.updateData(result);
 			}
 		});
 		e.preventDefault();
@@ -48,10 +48,10 @@ $(document).ready(function () {
 
 	$.ajax({
 		type: "GET",
-		url: "/api/dashboard",
-		success: function (data) {
+		url: "/api/dashboard/providers",
+		success: function (result) {
 			let providerSelect = $('[name="filter[provider]"]');
-			$.each(data, function (key, value) {
+			$.each(result.data, function (key, value) {
 				providerSelect.append('<option value="' + value.id + '">' + value.name + '</option>');
 			});
 			providerSelect.select2({
