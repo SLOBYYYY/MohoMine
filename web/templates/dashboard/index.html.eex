@@ -21,73 +21,126 @@
   <div class="tab-content">
     <div class="tab-pane fade in active" id="home" role="tabpanel">
       <h4>Főoldal</h4>
+
+
+
+
       <div class="row">
         <div class="col-lg-12">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <i class="fa fa-bar-chart-o fa-fw"></i>
-                Top üzletkötők 2015-ben
-                <div class="pull-right">
-                  <div class="btn-group">
-                    <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" type="button" aria-expanded="false">
-                      Exportálás
-                      <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu pull-right" role="menu">
-                      <li>
-                        <a href="#">CSV Export</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <div class="panel-body" data-container="agent-data">
-                <div class="well well-sm">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div data-filter>
-                      </div>
-                      <%= form_for @conn, dashboard_path(@conn, :top_agents), [id: :agent_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
-                        <div class="form-group">
-                          <%= label f, :year, "Év" %>
-                          <%= #date_select f, :agent_filter_year, default: "2016-01-01 01:01:01", class: "form-control" %>
-                          <%= text_input f, :year, class: "form-control" %>
-                        </div>
-                        <div class="form-group">
-                          <%= label f, :provider, "Forgalmazó" %>
-                          <%= select f, :provider, [], class: "form-control" %>
-                        </div>
-                        <div class="form-group">
-                          <%= submit "Szűrés", class: "btn btn-primary" %>
-                        </div>
-                      <% end %>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-6 col-md-12">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">Grafikusan</div>
-                      <div class="panel-body">
-                        <div id="top-agents-bar-chart" style="width:100%;height:300px;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">Táblázatosan</div>
-                      <div class="panel-body">
-                        <table id="top-agents-table" width="100%"></table>
-                      </div>
-                    </div>
-                    <!-- end panel -->
-                  </div>
-                  <!-- end col6 -->
-                </div>
-              </div>
-              <!-- end panel body -->
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <i class="fa fa-bar-chart-o fa-fw"></i>
+              Jelentések készítése
             </div>
-            <!-- end panel -->
+            <div class="panel-body">
+              <div class="well well-sm">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div data-filter>
+                    </div>
+                    <%= form_for @conn, dashboard_path(@conn, :agent_report), [id: :agent_report_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
+                    <div class="form-group">
+                      <%= label f, :from, "Mettől" %>
+                      <%= date_select f, :from, year: [options: 2010..2016], default: {@current_year, 1, 1}, class: "form-control" %>
+                    </div>
+                    <div class="form-group">
+                      <%= label f, :to, "Meddig" %>
+                      <%= date_select f, :to, year: [options: 2010..2016], default: {@current_year, 12, 31}, class: "form-control" %>
+                    </div>
+                    <div class="form-group">
+                      <%= submit "Mehet!", class: "btn btn-primary" %>
+                    </div>
+                  <% end %>
+                  </div>
+                </div>
+              </div>
+              <!-- end row -->
+            </div>
+            <!-- end panel body -->
+          </div>
+          <!-- end panel -->
+        </div>
+        <!-- end col -->
+      </div>
+      <!-- end row -->
+
+
+
+
+
+
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <i class="fa fa-bar-chart-o fa-fw"></i>
+              Top üzletkötők
+              <div class="pull-right">
+                <div class="dropdown">
+                  <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" type="button" aria-expanded="false" aria-haspopup="true" id="exportDropDown">
+                    Exportálás
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu pull-right" aria-labelledby="exportDropDown">
+                    <li>
+                    <a id="agentExport" style="cursor:pointer;">CSV Export</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="panel-body" data-container="agent-data">
+              <div class="well well-sm">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div data-filter>
+                    </div>
+                    <%= form_for @conn, dashboard_path(@conn, :top_agents), [id: :agent_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
+                    <div class="form-group">
+                      <%= label f, :year, "Év" %>
+                      <%= #date_select f, :agent_filter_year, default: "2016-01-01 01:01:01", class: "form-control" %>
+                      <%= text_input f, :year, class: "form-control" %>
+                    </div>
+                    <div class="form-group">
+                      <%= label f, :provider, "Forgalmazó" %>
+                      <%= select f, :provider, [], class: "form-control" %>
+                    </div>
+                    <div class="form-group">
+                      <%= submit "Szűrés", class: "btn btn-primary" %>
+                    </div>
+                  <% end %>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6 col-md-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Grafikusan</div>
+                    <div class="panel-body">
+                      <div id="agents-barchart" data-type="barchart">
+                      </div>
+                      <div id="top-agents-bar-chart" style="width:100%;height:300px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Táblázatosan</div>
+                    <div class="panel-body">
+                      <div id="agents-datatable" data-type="datatable">
+                      </div>
+                      <table id="top-agents-table" width="100%"></table>
+                    </div>
+                  </div>
+                  <!-- end panel -->
+                </div>
+                <!-- end col6 -->
+              </div>
+            </div>
+            <!-- end panel body -->
+          </div>
+          <!-- end panel -->
         </div>
         <!-- end col 12 -->
       </div>
@@ -95,58 +148,58 @@
 
       <div class="row">
         <div class="col-lg-12">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <i class="fa fa-bar-chart-o fa-fw"></i>
-                  Top termékek 2015-ben
-              </div>
-              <div class="panel-body">
-                <div class="well well-sm">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <div data-filter>
-                      </div>
-                      <%= form_for @conn, dashboard_path(@conn, :top_products), [id: :product_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
-                        <div class="form-group">
-                          <%= label f, :year, "Év" %>
-                          <%= text_input f, :year, class: "form-control" %>
-                        </div>
-                        <div class="form-group">
-                          <%= label f, :provider, "Forgalmazó" %>
-                          <%= select f, :provider, [], class: "form-control" %>
-                        </div>
-                        <div class="form-group">
-                          <%= submit "Szűrés", class: "btn btn-primary" %>
-                        </div>
-                      <% end %>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-6 col-md-12">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">Grafikusan</div>
-                      <div class="panel-body">
-                        <div id="top-products-bar-chart" style="width:100%;height:300px;"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-md-12">
-                    <div class="panel panel-default">
-                      <div class="panel-heading">Táblázatosan</div>
-                      <div class="panel-body">
-                        <table id="top-products-table" width="100%"></table>
-                      </div>
-                    </div>
-                    <!-- end panel -->
-                  </div>
-                  <!-- end col6 -->
-                </div>
-                <!-- end row -->
-              </div>
-              <!-- end panel body -->
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <i class="fa fa-bar-chart-o fa-fw"></i>
+              Top termékek
             </div>
-            <!-- end panel -->
+            <div class="panel-body">
+              <div class="well well-sm">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div data-filter>
+                    </div>
+                    <%= form_for @conn, dashboard_path(@conn, :top_products), [id: :product_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
+                    <div class="form-group">
+                      <%= label f, :year, "Év" %>
+                      <%= text_input f, :year, class: "form-control" %>
+                    </div>
+                    <div class="form-group">
+                      <%= label f, :provider, "Forgalmazó" %>
+                      <%= select f, :provider, [], class: "form-control" %>
+                    </div>
+                    <div class="form-group">
+                      <%= submit "Szűrés", class: "btn btn-primary" %>
+                    </div>
+                  <% end %>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-6 col-md-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Grafikusan</div>
+                    <div class="panel-body">
+                      <div id="top-products-bar-chart" style="width:100%;height:300px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Táblázatosan</div>
+                    <div class="panel-body">
+                      <table id="top-products-table" width="100%"></table>
+                    </div>
+                  </div>
+                  <!-- end panel -->
+                </div>
+                <!-- end col6 -->
+              </div>
+              <!-- end row -->
+            </div>
+            <!-- end panel body -->
+          </div>
+          <!-- end panel -->
         </div>
         <!-- end col 12 -->
       </div>

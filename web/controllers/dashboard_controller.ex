@@ -2,7 +2,8 @@ defmodule MohoMine.DashboardController do
   use MohoMine.Web, :controller
   
   def index(conn, _params) do
-    render conn, "index.html"
+    {{current_year,_,_}, _} = :calendar.universal_time
+    render conn, "index.html", current_year: current_year
   end
   
   def providers(conn, _params) do
@@ -24,6 +25,11 @@ defmodule MohoMine.DashboardController do
     agents = MohoMine.DataAccess.get_top_agents(filter)
 
     render conn, "top_agents.json", agents: agents
+  end
+
+  def agent_report(conn, params) do
+    filter = sanitize_params(params)
+    IO.inspect filter
   end
 
   defp sanitize_params(params) do

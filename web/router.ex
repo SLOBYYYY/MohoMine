@@ -30,5 +30,6 @@ defmodule MohoMine.Router do
     get "/dashboard/providers", DashboardController, :providers
     get "/dashboard/top_products", DashboardController, :top_products
     get "/dashboard/top_agents", DashboardController, :top_agents
+    get "/dashboard/agent_report", DashboardController, :agent_report
   end
 end
