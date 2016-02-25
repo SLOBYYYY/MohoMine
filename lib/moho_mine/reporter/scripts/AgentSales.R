@@ -407,7 +407,7 @@ AgentSales = function (connection) {
     }
 }
 
-library('RJDBC')
+suppressMessages(library('RJDBC'))
 dbPassword = "PcL233yW"
 drv = JDBC("org.firebirdsql.jdbc.FBDriver",
 		   args.jdbc.path,
