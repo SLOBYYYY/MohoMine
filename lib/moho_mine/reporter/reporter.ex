@@ -14,15 +14,14 @@ defmodule MohoMine.Reporter do
     settings = %Connector.RSettings{script_name: "AgentSales.R", parameters: [from, to], output_file: "/tmp/stuff.csv"}
     case Connector.run_r_script(settings) do
       :timeout ->
-        :timeout
+        {:timeout, nil}
       "OK" ->
         #todo: zip'em maybe?
-        #copy the files to the appropriate directory
         #provide download link
-        settings.output_file
+        {:ok, settings.output_file}
       error->
         Logger.error error
-        :error
+        {:error, nil}
     end
   end
 end

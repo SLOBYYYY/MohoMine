@@ -1,5 +1,6 @@
 defmodule MohoMine.DashboardController do
   use MohoMine.Web, :controller
+  alias MohoMine.Reporter
   
   def index(conn, _params) do
     {{current_year,_,_}, _} = :calendar.universal_time
@@ -28,8 +29,14 @@ defmodule MohoMine.DashboardController do
   end
 
   def agent_report(conn, params) do
-    filter = sanitize_params(params)
-    IO.inspect filter
+    filter = 
+      params
+      |> sanitize_params
+      |> Map.update!(:from, &convert_date_to_string(&1))
+      |> Map.update!(:to, &convert_date_to_string(&1))
+
+    {result, file_name} = Reporter.aggregated_agent_sales(filter.from, filter.to)
+    render conn, "aggregated_agent_sales.json", %{result: result, file_name: file_name}
   end
 
   defp sanitize_params(params) do
@@ -42,7 +49,26 @@ defmodule MohoMine.DashboardController do
         # Remove empty values
         |> Enum.filter(fn {_key, value} -> value != "" end)
         # Convert string keys to atoms
-        |> Enum.reduce(%{}, fn ({key, value}, acc) -> Map.put(acc, String.to_atom(key), value) end)
+        |> convert_string_keys_to_atoms
     end
+  end
+
+  @doc """
+  Converts each key in a list from string to atom and checks the values 
+  """
+  defp convert_string_keys_to_atoms(params) do
+    params 
+    |> Enum.into(%{}, fn({key, value}) ->
+      converted_key = if(is_binary(key), do: String.to_atom(key), else: key)
+      if(is_map(value) || is_list(value)) do
+        {converted_key, convert_string_keys_to_atoms(value)}
+      else
+        {converted_key, value}
+      end
+    end)
+  end
+
+  defp convert_date_to_string(date) do
+    "#{date.year}-#{String.rjust(date.month, 2, ?0)}-#{String.rjust(date.day, 2, ?0)}"
   end
 end

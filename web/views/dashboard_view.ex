@@ -22,6 +22,16 @@ defmodule MohoMine.DashboardView do
     %{"data": agents_converted}
   end
 
+  def render("aggregated_agent_sales.json", %{result: result, file_name: file_name}) do
+    data = case result do
+      :ok ->
+        %{result_file: file_name}
+      _ ->
+        nil
+    end
+    %{result: result, data: data}
+  end
+
   defp convert_to_table(data) do
     data
     |> Enum.into([], fn { name, total } ->
