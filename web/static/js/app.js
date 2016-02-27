@@ -46,6 +46,43 @@ $(document).ready(function () {
 		e.preventDefault();
 	});
 
+	let form_agent_report_filter = $("#agent_report_filter");
+	let filter_result_container= $("#result_container")
+	let filter_result_by_category = $("#result_by_category");
+	let filter_result_by_site = $("#result_by_site");
+	let filter_result_full = $("#result_full");
+	let filter_loader = $("#agent_report_filter_loader")
+	form_agent_report_filter.submit(function (e) {
+		filter_result_container.css("display", "none");
+		filter_loader.css("display", "inline");
+		$.ajax({
+			type: "GET",
+			url: "/api/dashboard/agent_report",
+			data: form_agent_report_filter.serialize(),
+			success: function (result) {
+				filter_loader.css("display", "none");
+				if (result.result === "ok") {
+					filter_result_container.css("display", "inline");
+					filter_result_by_category.text("Letöltés: " + result.data.file_names[0]);
+					filter_result_by_category.attr("href", result.data.links[0]);
+					filter_result_by_site.text("Letöltés: " + result.data.file_names[1]);
+					filter_result_by_site.attr("href", result.data.links[1]);
+					filter_result_full.text("Letöltés: " + result.data.file_names[2]);
+					filter_result_full.attr("href", result.data.links[2]);
+				} else {
+					filter_result_container.css("display", "none");
+					filter_result_container.select("a").text("Letöltés");
+					filter_result_container.select("a").attr("href", "#");
+				}
+			},
+			error: function (result) {
+				filter_loader.css("display", "none");
+			}
+		});
+		e.preventDefault();
+	});
+
+	// Initialize provider dropdowns
 	$.ajax({
 		type: "GET",
 		url: "/api/dashboard/providers",
