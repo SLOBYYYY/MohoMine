@@ -53,9 +53,6 @@
                   </div>
                 </div>
                 <div class="list-group" id="result_container" style="display:none;">
-                  <a class="list-group-item" id="result_by_category" href="#">Letöltés</a>
-                  <a class="list-group-item" id="result_by_site" href="#">Letöltés</a>
-                  <a class="list-group-item" id="result_full" href="#">Letöltés</a>
                 </div>
               </div>
               <!-- end row -->

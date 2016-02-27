@@ -22,10 +22,10 @@ defmodule MohoMine.DashboardView do
     %{result: :ok, data: agents_converted}
   end
 
-  def render("aggregated_agent_sales.json", %{result: result, links: links, file_names: file_names}) do
+  def render("aggregated_agent_sales.json", %{result: result, files: files}) do
     data = case result do
       :ok ->
-        %{links: links, file_names: file_names}
+        files
       _ ->
         nil
     end

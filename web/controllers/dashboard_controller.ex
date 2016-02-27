@@ -36,14 +36,14 @@ defmodule MohoMine.DashboardController do
       |> Map.update!(:to, &convert_date_to_string(&1))
 
     {result, file_names} = Reporter.aggregated_agent_sales(filter.from, filter.to)
-    link_to_files = case file_names do
+    files = case file_names do
       nil ->
         nil
       _ ->
         file_names
-        |> Enum.map(fn x -> MohoMine.Router.Helpers.file_path(conn, :download_report, x) end)
+        |> Enum.map(fn x -> %{file_name: x, link: MohoMine.Router.Helpers.file_path(conn, :download_report, x)} end)
     end
-    render conn, "aggregated_agent_sales.json", %{result: result, links: link_to_files, file_names: file_names}
+    render conn, "aggregated_agent_sales.json", %{result: result, files: files}
   end
 
   defp sanitize_params(params) do
