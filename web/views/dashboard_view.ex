@@ -9,23 +9,23 @@ defmodule MohoMine.DashboardView do
           "name": name
         } end
       )
-    %{"data": providers_converted}
+    %{result: :ok, data: providers_converted}
   end
 
   def render("top_products.json", %{products: products}) do
     products_converted = convert_to_table(products)
-    %{"data": products_converted}
+    %{result: :ok, data: products_converted}
   end
 
   def render("top_agents.json", %{agents: agents}) do
     agents_converted = convert_to_table(agents)
-    %{"data": agents_converted}
+    %{result: :ok, data: agents_converted}
   end
 
-  def render("aggregated_agent_sales.json", %{result: result, file_name: file_name}) do
+  def render("aggregated_agent_sales.json", %{result: result, links: links, file_names: file_names}) do
     data = case result do
       :ok ->
-        %{result_file: file_name}
+        %{links: links, file_names: file_names}
       _ ->
         nil
     end
