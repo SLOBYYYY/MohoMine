@@ -27,3 +27,7 @@ import_config "#{Mix.env}.exs"
 config :phoenix, :generators,
   migration: true,
   binary_id: false
+
+config :moho_mine, :file_settings,
+  uploaded: "/tmp/",
+  report: "/tmp/"
