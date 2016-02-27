@@ -19,6 +19,7 @@ defmodule MohoMine.Router do
     get "/demo", DemoController, :index
     get "/dashboard", DashboardController, :index
     get "/file/:file_name", FileController, :download
+    get "/report/:file_name", FileController, :download_report
     get "/", PageController, :index
   end
 
