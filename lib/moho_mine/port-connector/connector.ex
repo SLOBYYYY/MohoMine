@@ -7,7 +7,7 @@ defmodule MohoMine.PortConnector.Connector do
   @jdbc_driver "lib/moho_mine/reporter/odbc/jaybird-full-2.2.7.jar"
 
   defmodule RSettings do
-    defstruct script_name: nil, output_file: nil, parameters: []
+    defstruct script_name: nil, output_files: nil, parameters: []
   end
 
   @doc """
@@ -17,13 +17,13 @@ defmodule MohoMine.PortConnector.Connector do
     #--vanilla omits any context/saved/etc settings
     params_in_string = convert_parameters_to_string(settings.parameters)
     script_with_path = get_script_with_path(settings.script_name)
-    command = "Rscript --vanilla #{script_with_path} #{@jdbc_driver} #{settings.output_file} #{params_in_string}"
+    command = "Rscript --vanilla #{script_with_path} #{@jdbc_driver} #{settings.output_files |> Enum.join(" ")} #{params_in_string}"
     port = Port.open({:spawn, command}, [:binary])
 
     receive do
       {^port, {:data, result}} ->
         result
-      after 10000 ->
+      after 120000 ->
         Logger.warn "A command timed out: \"#{command}\""
         :timeout
     end

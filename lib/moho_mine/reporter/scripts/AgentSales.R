@@ -3,19 +3,21 @@ IsDate <- function(mydate, date.format = "%Y-%m-%d") {
 	  tryCatch(!is.na(as.Date(mydate, date.format)),  
 	  		              error = function(err) {FALSE})  
 }
-if (length(args) != 4) {
-	stop("A JDBC driver location, an output file, a \"from\" and a \"to\" date parameter has to be passed")
+if (length(args) != 6) {
+	stop("A JDBC driver location, 3 output(sales by category, sales by sites, full data dump) file a \"from\" and a \"to\" date parameter has to be passed")
 }
-if (!IsDate(args[3])) {
+if (!IsDate(args[5])) {
 	stop("Argument \"from\" has to be in a format yyyy-mm-dd")
 }
-if (!IsDate(args[4])) {
+if (!IsDate(args[6])) {
 	stop("Argument \"to\" has to be in a format yyyy-mm-dd")
 }
 args.jdbc.path = args[1]
-args.output.file = args[2]
-args.from = args[3]
-args.to = args[4]
+args.agent.sales.by.category = args[2]
+args.agent.sales.by.site = args[3]
+args.full.data = args[4]
+args.from = args[5]
+args.to = args[6]
 
 AgentSales = function (connection) {
     thisEnv = environment()
@@ -278,7 +280,7 @@ AgentSales = function (connection) {
                     return(agent.sales)
                 }
             },
-            spewDataForEveryAgent = function () {
+            exportAgentDataBySite = function (filename) {
                 if (is.null(result)) {
                     stop("Use \"load\" to load data first")
                 } else {
@@ -288,7 +290,6 @@ AgentSales = function (connection) {
                     agents = rbind(agents, data.frame("agent_name"="Összesen"))
                     sites = data.frame("site"=sort(unique(result$original_site)))
                     sites = rbind(sites, data.frame("site"="Összesen"))
-                    filename = "report/agent_aggregated.csv"
                     for (i in c(1:(dim(agents)[1])-1)) {
                         agent.name = agents[i,1]
                         agent.result = data.frame("site"=sites$site)
@@ -411,23 +412,20 @@ suppressMessages(library('RJDBC'))
 dbPassword = "PcL233yW"
 drv = JDBC("org.firebirdsql.jdbc.FBDriver",
 		   args.jdbc.path,
-           #"./lib/moho_mine/reporter/odbc/jaybird-full-2.2.7.jar",
            identifier.quote="`")
-connection_2015_full = dbConnect(drv, 
-                       paste("jdbc:firebirdsql://127.0.0.1:3050//databases/2015/", "dbs_2015_full.fdb?encoding=ISO8859_1", sep=""),
-                       "SYSDBA", dbPassword)
+c = dbConnect(drv, 
+			   paste("jdbc:firebirdsql://127.0.0.1:3050//databases/2015/", "dbs_2015_full.fdb?encoding=ISO8859_1", sep=""),
+			   "SYSDBA", dbPassword)
 
 
-#c = connect.live()
-c = connection_2015_full
 as = AgentSales(c)
 
 as$load(args.from, args.to)
-#agents.report = as$report()
-agents.result = as$getResult()
-#as$spewDataForEveryAgent()
+agent.sales.by.category = as$report()
+agent.result = as$getResult()
 
-#write.csv(t(agents.report), "report/agent_sales.csv")
-write.csv(agents.result, args.output.file)
+write.csv(t(agent.sales.by.category), args.agent.sales.by.category)
+as$exportAgentDataBySite(args.agent.sales.by.site)
+write.csv(agent.result, args.full.data)
 success = dbDisconnect(conn = c)
 cat("OK")
