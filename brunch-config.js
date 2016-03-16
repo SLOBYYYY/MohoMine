@@ -9,7 +9,8 @@ exports.config = {
       order: {
         before: [
        	  "web/static/vendor/js/jquery/jquery-1.11.3.min.js",
-       	  "web/static/vendor/js/flot/jquery.flot.js"
+       	  "web/static/vendor/js/flot/jquery.flot.js",
+       	  "web/static/vendor/js/flot/canvas2image.js"
         ]
 	  }
 
