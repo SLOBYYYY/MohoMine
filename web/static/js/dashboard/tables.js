@@ -1,9 +1,25 @@
 function createDefaultOptionsForDataTable () {
 	let defaultOptions = {
-		paging: false,
+		paging: true,
 		searching: false,
 		lengthChange: false,
 		info: false,
+		"initComplete": function () {
+			let api = this.api()
+			new $.fn.dataTable.Buttons(api, {
+				buttons: [
+					{
+						extend: 'excel',
+						title: 'Excel export'
+					},
+					{
+						extend: 'pdf',
+						title: 'PDF Export'
+					}
+				]
+			});
+			$(this).parent().before(api.buttons().container());
+		}
 	};
 	return defaultOptions;
 }
