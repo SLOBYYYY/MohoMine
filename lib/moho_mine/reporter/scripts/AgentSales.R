@@ -28,16 +28,18 @@ AgentSales = function (connection) {
             command = paste("select id_termek",
                             "from termek",
                             "where lower(termek.nev) in ('adengo  1', 'adengo  5', 'afalon disp.  5', 'antracol wg   6', 'bactospeine  5', 'biathlon 4d', 'biscaya  3', 'bumper 25 ec  5',", 
-			       							  "'calypso 480 sc  1', 'cambio          5', 'colombus  1', 'colombus  5', 'coragen 20 sc  1', 'coragen 20 sc  0,2', 'curzate super df  5',",
-			       							  "'cuproxat        5', 'cuproxat        20', 'dithane dg neotec  10', 'dithane m-45      25', 'folpan 80 wdg   5', 'fontelis 20 sc  1',",
-			       							  "'galben r  5', 'galben r  25', 'galera sl   5', 'galigan 240 ec  5', 'goal duplo   3', 'inazuma  1', 'kaiso eg  1', 'laudis  1',",
-			       							  "'laudis  5', 'lingo  5', 'mavrik 24 ew  1', 'melody compact 49 wg 6', 'mextrol b  5', 'megysto  5', 'mildicut  10', 'mist control     5',",
-			       							  "'mist-control    5', 'monsoon active  5', 'montaflow sc  10', 'mustang forte  1', 'mustang forte  5', 'mystic pro  5', 'nimrod 25 ec    1',",
-			       							  "'nuflon  5', 'nurelle-d 500 ec 1', 'nurelle-d 500 ec 5', 'ordax super (0,45l c+10l ss+3l d)', 'pendigan 330 ec   10', 'perenal  5',",
-			       							  "'pictor  5', 'prosaro               5', 'prolectus  0,25', 'pulsar          5', 'pyrinex 48 ec   5', 'pyrinex supreme  5', 'racer 25 ec     5',",
-			       							  "'sekator od  1', 'solofol 80 wdg  10', 'stabilan sl     10', 'systhane duplo  1', 'trek p  5', 'tango star      5', 'teppeki 50 wg  0,5',",
+			       							  "'calypso 480 sc  1', 'cambio          5', 'capreno csomag', 'colombus  1', 'colombus  5', 'coragen 20 sc  1',",
+			       							  "'coragen 20 sc  5', 'curzate super df  5', 'cuproxat        5', 'cuproxat        20', 'cyflamid 5 ew   1',",
+			       							  "'dithane dg neotec  10', 'dithane m-45      25', 'folpan 80 wdg   5', 'fontelis 20 sc  1',",
+			       							  "'galera sl   5', 'galigan 240 ec  5', 'inazuma  1', 'kaiso eg  1', 'karathane star  1', 'karathane star  5',",
+			       							  "'laudis  5', 'lingo  5', 'mavrik 24 ew  1', 'melody compact 49 wg 6', 'mextrol b  5', 'mildicut  10',",
+			       							  "'monsoon active  5', 'montaflow sc  10', 'mustang forte  1', 'mustang forte  5', 'mystic pro  5', 'nimrod 25 ec    1',",
+			       							  "'nuflon  5', 'nurelle-d 500 ec 1', 'nurelle-d 500 ec 5', 'opera new  5', 'osiris  5', 'pendigan 330 ec   10', 'perenal  5',",
+			       							  "'pictor  5', 'prosaro               5', 'prolectus  0,25', 'pulsar          5', 'pulsar plus  10', 'pyrinex 48 ec   5',",
+			       							  "'pyrinex supreme  5', 'racer 25 ec     5', 'sekator od  1', 'solofol 80 wdg  10', 'stabilan sl     10', 'systhane duplo  1',",
+			       							  "'teppeki 50 wg  2', 'tango star      5', 'teppeki 50 wg  0,5', 'trek p  5',",
 			       							  "'warrant 200 sl  1', 'wing p  10', 'zantara ec 216  5', 'zoom 11 sc  1', 'python duplo 6ha',",
-                                              "'pulsar          5', 'stellar 1+ dash 1','taltos+polyglycol  1,5+22,5', 'taltos+polyglycol  25*(0,033+0,5)') or ",
+                                              "'pulsar          5', 'taltos+polyglycol  1,5+22,5', 'taltos+polyglycol  25*(0,033+0,5)') or ",
 			       							  "lower(termek.nev) like 'bayer sz_l_ cs.'")
             temp = dbGetQuery(localConnection, command)
             colnames(temp) = c("id")
@@ -75,11 +77,15 @@ AgentSales = function (connection) {
                                          list(data$agent_name),
                                          function (x) { round(sum(x),0)})
             colnames(aggregated.sales) = c("agent_name", "sum")
-            full.total = sum(aggregated.sales$sum)
-            aggregated.sales = rbind(aggregated.sales, data.frame("agent_name"="Összesen", "sum"=full.total))
-            merged = merge(agents, aggregated.sales, by="agent_name", all.x=T)[,2]
-            merged[is.na(merged)] = 0
-            return(merged)
+			full.total = sum(aggregated.sales$sum)
+			tempresult = merge(agents, aggregated.sales, by="agent_name", all.x=T)
+			# I had issues here. merge() works in weird ways with the row for "Összesen":
+			# If "Összesen" was already added to the aggregated.sales with a value, merge will sort it too, forcing it after letter "O" alphabetically
+			# tempresult will contain "Összesen" now but it will be at the end of the dataframe since it's value is N/A!
+			tempresult[which(tempresult$agent_name=="Összesen"),"sum"] = full.total
+			merged = tempresult[,2]
+			merged[is.na(merged)] = 0
+			return(merged)
         }
         aggregateForSitesByAgent = function (data, sites, agent_name, criteria = NULL) {
             localData = data
@@ -94,11 +100,12 @@ AgentSales = function (connection) {
                                          list(localData$original_site),
                                          function (x) { round(sum(x),0)})
             colnames(aggregated.sales) = c("site", "sum")
-            full.total = sum(aggregated.sales$sum)
-            aggregated.sales = rbind(aggregated.sales, data.frame("site"="Összesen", "sum"=full.total))
-            merged = merge(sites, aggregated.sales, by="site", all.x=T)[,2]
-            merged[is.na(merged)] = 0
-            return(merged)
+			full.total = sum(aggregated.sales$sum)
+			tempresult = merge(sites, aggregated.sales, by="site", all.x=T)
+			tempresult[which(tempresult$site=="Összesen"),"sum"] = full.total
+			merged = tempresult[,2]
+			merged[is.na(merged)] = 0
+			return(merged)
         }
         aggregateByCriteria = function (data, agents, criteria) {
             ss = data[which(criteria),]
@@ -414,7 +421,7 @@ drv = JDBC("org.firebirdsql.jdbc.FBDriver",
 		   args.jdbc.path,
            identifier.quote="`")
 c = dbConnect(drv, 
-			   paste("jdbc:firebirdsql://127.0.0.1:3050//databases/2015/", "dbs_2015_full.fdb?encoding=ISO8859_1", sep=""),
+			   paste("jdbc:firebirdsql://127.0.0.1:3050//databases/2016/", "dbs_2016.fdb?encoding=ISO8859_1", sep=""),
 			   "SYSDBA", dbPassword)
 
 
