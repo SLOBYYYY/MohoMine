@@ -126,7 +126,12 @@ AgentSales = function (connection) {
                 return(get("thisEnv", thisEnv))
             },
             getResult = function () {
-                return(get("result", thisEnv))
+            	data = get("result", thisEnv)
+            	data$customer_differs = rep(0, nrow(data))
+            	data[which(data$customer_szallito != data$customer_szamla),"customer_differs"] = 1
+            	data$agent_differs = rep(0, nrow(data))
+            	data[which(data$agent_szallito != data$agent_szamla),"agent_differs"] = 1
+                return(data)
             },
             load = function (from, to) {
                 command = paste(
@@ -135,7 +140,7 @@ AgentSales = function (connection) {
                     "select szamla.datum, szamla.sorszam, termek.nev, szamlatetel.eladar, szamlatetel.mennyiseg, ",
                     "szamlatetel.eladar * szamlatetel.mennyiseg as \"EladarSum\", ",
                     "forgalmazo.nev, csoport.nev, vevo.nev, uzletkoto.nev, telephelysync.nev, termek.id_termek, ",
-                    "vevo.id_vevo, 'UZLETKOTO-SZLEVEL' ",
+                    "vevo.id_vevo, 'UZLETKOTO-SZLEVEL', vevo.nev, uzletkoto.nev, vszamla.nev, uszamla.nev ",
                     "from szamlatetel join  ",
                     "szamla on szamla.id_szamla = szamlatetel.id_szamla join ",
                     "kihivatkozas kh on kh.id_szamla = szamla.id_szamla join ",
@@ -145,7 +150,9 @@ AgentSales = function (connection) {
                     "termek on termek.id_termek = szamlatetel.id_termek join ",
                     "forgalmazo on forgalmazo.id_forgalmazo = termek.id_forgalmazo join ",
                     "csoport on csoport.id_csoport = termek.id_csoport left join ",
-                    "uzletkoto on uzletkoto.id_uzletkoto = vevo.id_uzletkoto ",
+                    "uzletkoto on uzletkoto.id_uzletkoto = vevo.id_uzletkoto left join ",
+                    "vevo vszamla on vszamla.id_vevo = szamla.id_vevo left join ",
+                    "uzletkoto uszamla on uszamla.id_uzletkoto = szamla.id_uzletkoto ",
                     "where szamla.datum >='", from, "' and szamla.datum <='", to, "' ",
                     "union all ",
                     #Ugyanaz mint az előző csak itt minden olyan számlát húzok be amihez nem tartozik szállítólevél. ",
@@ -153,7 +160,7 @@ AgentSales = function (connection) {
                     "select szamla.datum, szamla.sorszam, termek.nev, szamlatetel.eladar, szamlatetel.mennyiseg, ",
                     "szamlatetel.eladar * szamlatetel.mennyiseg as \"EladarSum\", ",
                     "forgalmazo.nev, csoport.nev, vevo.nev, uzletkoto.nev, telephelysync.nev, termek.id_termek, ",
-                    "vevo.id_vevo, 'UZLETKOTO-SZAMLA' ",
+                    "vevo.id_vevo, 'UZLETKOTO-SZAMLA', null, null, vevo.nev, uzletkoto.nev ",
                     "from szamlatetel join  ",
                     "szamla on szamla.id_szamla = szamlatetel.id_szamla join ",
                     "telephelysync on telephelysync.id_telephelysync = szamla.id_orig_telephely join ",
@@ -177,7 +184,7 @@ AgentSales = function (connection) {
                     sep="")
                 
                 temp = dbGetQuery(localConnection, command)
-                colnames(temp) = c("date", "bill_num", "product_name", "price", "amount", "totalprice", "provider_name", "group_name", "customer_name", "agent_name", "original_site", "product_id", "customer_id", "agent_type")
+                colnames(temp) = c("date", "bill_num", "product_name", "price", "amount", "totalprice", "provider_name", "group_name", "customer_name", "agent_name", "original_site", "product_id", "customer_id", "agent_type", "customer_szallito", "agent_szallito", "customer_szamla", "agent_szamla")
                 assign("result", temp, thisEnv)
                 #print("Data is loaded into memory")
             },
