@@ -152,7 +152,7 @@ AgentSales = function (connection) {
                     "csoport on csoport.id_csoport = termek.id_csoport left join ",
                     "uzletkoto on uzletkoto.id_uzletkoto = vevo.id_uzletkoto left join ",
                     "vevo vszamla on vszamla.id_vevo = szamla.id_vevo left join ",
-                    "uzletkoto uszamla on uszamla.id_uzletkoto = szamla.id_uzletkoto ",
+                    "uzletkoto uszamla on uszamla.id_uzletkoto = vszamla.id_uzletkoto ",
                     "where szamla.datum >='", from, "' and szamla.datum <='", to, "' ",
                     "union all ",
                     #Ugyanaz mint az előző csak itt minden olyan számlát húzok be amihez nem tartozik szállítólevél. ",
