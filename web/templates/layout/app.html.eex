@@ -86,7 +86,7 @@
         </nav>
 
         <div id="page-wrapper">
-          <%= @inner %>
+          <%= render @view_module, @view_template, assigns %>
         </div>
         <!-- /#page-wrapper -->
     </div> <!-- /container -->
