@@ -44,7 +44,7 @@ config :moho_mine, MohoMine.Repo,
 config :moho_mine, :firebird, 
   driver: "Firebird",
   uid: "SYSDBA",
-  pwd: "PcL233yW",
+  pwd: "masterkey",
   server: "localhost",
   port: 3050,
   database: "/databases/dbs_bosz_2015.fdb"

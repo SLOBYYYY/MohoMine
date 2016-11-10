@@ -11,7 +11,7 @@ defmodule MohoMine.Reporter do
   based on the given date range
   """
   def aggregated_agent_sales(from, to) do
-    base_filenames = ["sales_by_category.csv", "sales_by_site.csv", "full_report.csv"]
+    base_filenames = ["sales_by_category.xlsx", "sales_by_site.csv", "full_report.xlsx"]
     filenames_with_timestamps = base_filenames
       |> Enum.map(&generate_file_name_with_timestamp(&1))
     settings = %Connector.RSettings{script_name: "AgentSales.R", parameters: [from, to], output_files: (filenames_with_timestamps |> Enum.map(&generate_absolut_path_to_report_file(&1)))}

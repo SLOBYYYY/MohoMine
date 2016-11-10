@@ -4,7 +4,7 @@ defmodule MohoMine.PortConnector.Connector do
   """
   require Logger
   @script_folder "lib/moho_mine/reporter/scripts/"
-  @jdbc_driver "lib/moho_mine/reporter/odbc/jaybird-full-2.2.7.jar"
+  @jdbc_driver "lib/moho_mine/reporter/odbc/jaybird-full-2.2.11.jar"
 
   defmodule RSettings do
     defstruct script_name: nil, output_files: nil, parameters: []

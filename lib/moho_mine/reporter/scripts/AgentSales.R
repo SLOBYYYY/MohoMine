@@ -13,9 +13,9 @@ if (!IsDate(args[6])) {
 	stop("Argument \"to\" has to be in a format yyyy-mm-dd")
 }
 args.jdbc.path = args[1]
-args.agent.sales.by.category = args[2]
-args.agent.sales.by.site = args[3]
-args.full.data = args[4]
+args.agent.sales.by.category.file = args[2]
+args.agent.sales.by.site.file = args[3]
+args.full.data.file = args[4]
 args.from = args[5]
 args.to = args[6]
 
@@ -131,14 +131,15 @@ AgentSales = function (connection) {
             	data[which(data$customer_szallito != data$customer_szamla),"customer_differs"] = 1
             	data$agent_differs = rep(0, nrow(data))
             	data[which(data$agent_szallito != data$agent_szamla),"agent_differs"] = 1
+                colnames(data) = c("Dátum", "Szállító/Számla száma", "Termék neve", "Egységár (kerekített)", "Mennyiség", "Total (kerekített)", "Szolgáltató", "Termékcsoport", "Vevő", "Üzletkötő", "Kiállító telephely", "termek_id", "vevo_id", "Üzletkötő típusa", "Szállítólevél vevője", "Szállítólevél üzletkötője", "Számla vevője", "Számla üzletkötője", "Vevő különbözik", "Üzletkötő különbözik")
                 return(data)
             },
             load = function (from, to) {
                 command = paste(
                     #Azok a számlák amihez tartozik szállítólevél.
                     #Itt az üzletkötőket a szállítóhoz tartozó vevő alapján számítom
-                    "select szamla.datum, szamla.sorszam, termek.nev, szamlatetel.eladar, szamlatetel.mennyiseg, ",
-                    "szamlatetel.eladar * szamlatetel.mennyiseg as \"EladarSum\", ",
+                    "select szamla.datum, szamla.sorszam, termek.nev, round(szamlatetel.eladar) as \"eladar\", szamlatetel.mennyiseg, ",
+                    "round(szamlatetel.eladar * szamlatetel.mennyiseg) as \"EladarSum\", ",
                     "forgalmazo.nev, csoport.nev, vevo.nev, uzletkoto.nev, telephelysync.nev, termek.id_termek, ",
                     "vevo.id_vevo, 'UZLETKOTO-SZLEVEL', vevo.nev, uzletkoto.nev, vszamla.nev, uszamla.nev ",
                     "from szamlatetel join  ",
@@ -157,8 +158,8 @@ AgentSales = function (connection) {
                     "union all ",
                     #Ugyanaz mint az előző csak itt minden olyan számlát húzok be amihez nem tartozik szállítólevél. ",
                     #Itt az üzletkötőket a számlához tartozó vevő alapján számítom ",
-                    "select szamla.datum, szamla.sorszam, termek.nev, szamlatetel.eladar, szamlatetel.mennyiseg, ",
-                    "szamlatetel.eladar * szamlatetel.mennyiseg as \"EladarSum\", ",
+                    "select szamla.datum, szamla.sorszam, termek.nev, round(szamlatetel.eladar) as \"eladar\", szamlatetel.mennyiseg, ",
+                    "round(szamlatetel.eladar * szamlatetel.mennyiseg) as \"EladarSum\", ",
                     "forgalmazo.nev, csoport.nev, vevo.nev, uzletkoto.nev, telephelysync.nev, termek.id_termek, ",
                     "vevo.id_vevo, 'UZLETKOTO-SZAMLA', null, null, vevo.nev, uzletkoto.nev ",
                     "from szamlatetel join  ",
@@ -404,7 +405,6 @@ AgentSales = function (connection) {
                                                                                  grepl("^MT|^YARA|^TIMAC", result.without.special$product_name) 
                                                                                  )
                                                                              )
-                        #write.csv(agent.result, filename)
                         if (i==1) {
                             write.table(agent.name, filename, row.names=F, col.names=F)
                         } else {
@@ -423,7 +423,9 @@ AgentSales = function (connection) {
 }
 
 suppressMessages(library('RJDBC'))
-dbPassword = "PcL233yW"
+suppressMessages(library('xlsx'))
+
+dbPassword = "masterkey"
 drv = JDBC("org.firebirdsql.jdbc.FBDriver",
 		   args.jdbc.path,
            identifier.quote="`")
@@ -438,8 +440,8 @@ as$load(args.from, args.to)
 agent.sales.by.category = as$report()
 agent.result = as$getResult()
 
-write.csv(t(agent.sales.by.category), args.agent.sales.by.category)
-as$exportAgentDataBySite(args.agent.sales.by.site)
-write.csv(agent.result, args.full.data)
+write.xlsx(t(agent.sales.by.category), args.agent.sales.by.category.file, col.names=F)
+as$exportAgentDataBySite(args.agent.sales.by.site.file)
+write.xlsx(agent.result, args.full.data.file)
 success = dbDisconnect(conn = c)
 cat("OK")
