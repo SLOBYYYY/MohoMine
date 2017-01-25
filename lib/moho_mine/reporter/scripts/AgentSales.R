@@ -34,7 +34,7 @@ AgentSales = function (connection) {
 			       							  "'galera sl   5', 'galigan 240 ec  5', 'inazuma  1', 'kaiso eg  1', 'karathane star  1', 'karathane star  5',",
 			       							  "'laudis  5', 'lingo  5', 'mavrik 24 ew  1', 'melody compact 49 wg 6', 'mextrol b  5', 'mildicut  10',",
 			       							  "'monsoon active  5', 'montaflow sc  10', 'mustang forte  1', 'mustang forte  5', 'mystic pro  5', 'nimrod 25 ec    1',",
-			       							  "'nuflon  5', 'nurelle-d 500 ec 1', 'nurelle-d 500 ec 5', 'opera new  5', 'osiris  5', 'pendigan 330 ec   10', 'perenal  5',",
+			       							  "'nuflon  5', 'nurelle-d 500 ec 1', 'nurelle-d 500 ec 5', 'opera new  5', 'osiris  5', 'pendigan 330 ec   5', 'perenal  5',",
 			       							  "'pictor  5', 'prosaro               5', 'prolectus  0,25', 'pulsar          5', 'pulsar plus  10', 'pyrinex 48 ec   5',",
 			       							  "'pyrinex supreme  5', 'racer 25 ec     5', 'sekator od  1', 'solofol 80 wdg  10', 'stabilan sl     10', 'systhane duplo  1',",
 			       							  "'teppeki 50 wg  2', 'tango star      5', 'teppeki 50 wg  0,5', 'trek p  5',",
@@ -231,19 +231,21 @@ AgentSales = function (connection) {
                         agent.sales$Kiemelt +
                         agent.sales$"Egyéb, nagy gyártóhoz nem köthető"
                     
-                    agent.sales$Adama = aggregateForProvider(result.without.special, agents, "^ADAMA")
-                    agent.sales$Arysta = aggregateForProvider(result.without.special, agents, "^ARYSTA")
-                    agent.sales$BASF = aggregateForProvider(result.without.special, agents, "^BASF")
-                    agent.sales$Bayer = aggregateForProvider(result.without.special, agents, "^BAYER")
-                    agent.sales$Belchim = aggregateForProvider(result.without.special, agents, "^BELCHIM")
-                    agent.sales$Cheminova = aggregateForProvider(result.without.special, agents, "^CHEMINOVA")
-                    agent.sales$Chemtura = aggregateForProvider(result.without.special, agents, "^CHEMTURA$")
-                    agent.sales$Dow = aggregateForProvider(result.without.special, agents, "^DOW")
-                    agent.sales$Dupont = aggregateForProvider(result.without.special, agents, "^DUPONT")
-                    agent.sales$Kwizda = aggregateForProvider(result.without.special, agents, "^KWIZDA")
-                    agent.sales$Nufarm = aggregateForProvider(result.without.special, agents, "^NUFARM")
-                    agent.sales$"Sumi-Agro növényvédőszer" = aggregateForProvider(result.without.special, agents, "^SUMI AGRO")
-                    agent.sales$"Syngenta növényvédőszer" = aggregateForProvider(result.without.special, agents, "^SYNGENTA KFT$")
+					# We have to exclude VETŐMAG from the query
+					rws.without.vetomag = subset(result.without.special, !grepl("^VET.MAG$", result.without.special$group_name))
+                    agent.sales$Adama = aggregateForProvider(rws.without.vetomag, agents, "^ADAMA")
+                    agent.sales$Arysta = aggregateForProvider(rws.without.vetomag, agents, "^ARYSTA")
+                    agent.sales$BASF = aggregateForProvider(rws.without.vetomag, agents, "^BASF")
+                    agent.sales$Bayer = aggregateForProvider(rws.without.vetomag, agents, "^BAYER CROPSCIENCE")
+                    agent.sales$Belchim = aggregateForProvider(rws.without.vetomag, agents, "^BELCHIM")
+                    agent.sales$Cheminova = aggregateForProvider(rws.without.vetomag, agents, "^CHEMINOVA")
+                    agent.sales$Chemtura = aggregateForProvider(rws.without.vetomag, agents, "^CHEMTURA$")
+                    agent.sales$Dow = aggregateForProvider(rws.without.vetomag, agents, "^DOW")
+                    agent.sales$Dupont = aggregateForProvider(rws.without.vetomag, agents, "^DUPONT")
+                    agent.sales$Kwizda = aggregateForProvider(rws.without.vetomag, agents, "^KWIZDA")
+                    agent.sales$Nufarm = aggregateForProvider(rws.without.vetomag, agents, "^NUFARM")
+                    agent.sales$"Sumi-Agro növényvédőszer" = aggregateForProvider(rws.without.vetomag, agents, "^SUMI AGRO")
+                    agent.sales$"Syngenta növényvédőszer" = aggregateForProvider(rws.without.vetomag, agents, "^SYNGENTA KFT$")
                     agent.sales$"Egyéb növényvédőszer" = agent.sales$Adama +
                         agent.sales$Arysta +
                         agent.sales$BASF +
@@ -271,6 +273,9 @@ AgentSales = function (connection) {
                     agent.sales$Saaten = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^SAATEN") 
                     agent.sales$"Sumi-Agro vetőmag" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^SUMI AGRO")
                     agent.sales$"Syngenta vetőmag" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^SYNGENTA VET.MAG$")
+                    agent.sales$"Dow vetőmag" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^DOW")
+                    agent.sales$"Kwizda vetőmag" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^KWIZDA")
+
                     agent.sales$"Vetőmag összes" = agent.sales$"Gabonakutató" +
                         agent.sales$"Egyéb vetőmag" +
                         agent.sales$BayerSeeds +
@@ -282,7 +287,9 @@ AgentSales = function (connection) {
                         agent.sales$Ragt +
                         agent.sales$Saaten +
                         agent.sales$"Sumi-Agro vetőmag" +
-                        agent.sales$"Syngenta vetőmag" 
+                        agent.sales$"Syngenta vetőmag" +
+                        agent.sales$"Dow vetőmag" +
+                        agent.sales$"Kwizda vetőmag"
                     
                     agent.sales$"Egyéb műtrágya" = aggregateByCriteria(result.without.special, agents, (grepl("^EGY.B$", result.without.special$provider_name) &
                                                                                  grepl("^M.TR.GYA$", result.without.special$group_name) &
@@ -336,19 +343,22 @@ AgentSales = function (connection) {
                         ffaavke = ffaav + 
                             kiemelt +
                             misc
-                        adama = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^ADAMA", result.without.special$provider_name))
-                        arysta = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^ARYSTA", result.without.special$provider_name))
-                        BASF = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^BASF", result.without.special$provider_name))
-                        bayer = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^BAYER", result.without.special$provider_name))
-                        belchim = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^BELCHIM", result.without.special$provider_name))
-                        cheminova = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^CHEMINOVA", result.without.special$provider_name))
-                        chemtura = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^CHEMTURA$", result.without.special$provider_name))
-                        dow = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^DOW", result.without.special$provider_name))
-                        dupont = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^DUPONT", result.without.special$provider_name))
-                        kwizda = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^KWIZDA", result.without.special$provider_name))
-                        nufarm = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^NUFARM", result.without.special$provider_name))
-                        sumi = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^SUMI AGRO", result.without.special$provider_name))
-                        syngenta = aggregateForSitesByAgent(result.without.special, sites, agent.name, grepl("^SYNGENTA KFT$", result.without.special$provider_name))
+
+						# We have to exclude VETŐMAG from the query
+                        rws.without.vetomag = subset(result.without.special, !grepl("^VET.MAG$", result.without.special$group_name))
+                        adama = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^ADAMA", rws.without.vetomag$provider_name))
+                        arysta = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^ARYSTA", rws.without.vetomag$provider_name))
+                        BASF = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^BASF", rws.without.vetomag$provider_name))
+                        bayer = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^BAYER CROPSCIENCE", rws.without.vetomag$provider_name))
+                        belchim = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^BELCHIM", rws.without.vetomag$provider_name))
+                        cheminova = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^CHEMINOVA", rws.without.vetomag$provider_name))
+                        chemtura = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^CHEMTURA$", rws.without.vetomag$provider_name))
+                        dow = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^DOW", rws.without.vetomag$provider_name))
+                        dupont = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^DUPONT", rws.without.vetomag$provider_name))
+                        kwizda = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^KWIZDA", rws.without.vetomag$provider_name))
+                        nufarm = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^NUFARM", rws.without.vetomag$provider_name))
+                        sumi = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^SUMI AGRO", rws.without.vetomag$provider_name))
+                        syngenta = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^SYNGENTA KFT$", rws.without.vetomag$provider_name))
                         misc_pesticide = adama +
                             arysta +
                             BASF +
@@ -385,6 +395,8 @@ AgentSales = function (connection) {
                         saaten = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^SAATEN", rws.vetomag$provider_name)) 
                         sumi.vegomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^SUMI AGRO", rws.vetomag$provider_name))
                         syngenta.vetomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^SYNGENTA VET.MAG$", rws.vetomag$provider_name))
+                        dow.vetomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^DOW", rws.vetomag$provider_name))
+                        kwizda.vetomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^KWIZDA", rws.vetomag$provider_name))
                         vetomag.osszes = gabonakutato +
                             egyeb.vetomag +
                             KWS +
@@ -396,7 +408,9 @@ AgentSales = function (connection) {
                             ragt +
                             saaten +
                             sumi.vegomag +
-                            syngenta.vetomag 
+                            syngenta.vetomag +
+                            dow.vetomag +
+                            kwizda.vetomag
                         
                         agent.result$"Vetőmag" = vetomag.osszes
                         agent.result$"Egyéb műtrágya" = aggregateForSitesByAgent(result.without.special, sites, agent.name,
