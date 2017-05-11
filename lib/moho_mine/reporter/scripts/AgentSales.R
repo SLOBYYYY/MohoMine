@@ -215,7 +215,6 @@ AgentSales = function (connection) {
                     #   - "Egyéb" is set as a provider
                     #   - Is not "Műtrágya" or not "Vetőmag"
                     #   - Is "Műtrágya" but doesn't start with MT, Yara, Timac or Cropcare
-					#   - Is "Vetőmag" and starts with "* FŰKEVERÉK"
                     agent.sales$"Egyéb, nagy gyártóhoz nem köthető" = 
                         aggregateByCriteria(result.without.special,
                                                            agents,
@@ -225,10 +224,6 @@ AgentSales = function (connection) {
                                                                                (
                                                                                    grepl("^M.TR.GYA$", result.without.special$group_name) &
                                                                                     !grepl("^MT|^YARA|^TIMAC|^CROPCARE", result.without.special$product_name)
-                                                                               ) |
-                                                                               ( 
-                                                                                   grepl("^VET.MAG$", result.without.special$group_name) &
-                                                                                    grepl("^\\* F.KEVER.K", result.without.special$product_name)
                                                                                )
                                                                            )
                                             )
@@ -267,13 +262,7 @@ AgentSales = function (connection) {
                     agent.sales$"Növényvédőszer összes" = agent.sales$"F + FA + A + V + K + E" + agent.sales$"Egyéb növényvédőszer"
                     
                     agent.sales$"Gabonakutató" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^GABONAKUTAT.")
-					# We have to exclude products from "Egyéb vetőmag" that are in group "Vetőmag" and are at provider "EGYÉB" but their names begin with "* FŰKEVERÉK".
-					# The actual requirement is to exclude every Fűkeverék with 20 or 25 kg packaging but since every fűkeverék is in these big packages, it's enough to just exclude all of them.
-					nem.fukeverekek = subset(result.without.special, !grepl("^\\* F.KEVER.K", result.without.special$product_name))
-                    agent.sales$"Egyéb vetőmag" = aggregateByCriteriaForVetomagForProvider(nem.fukeverekek, agents, "^EGY.B$")
-					# We add in a new line the previously excluded Fűkeverék products
-					fukeverekek = subset(result.without.special, grepl("^\\* F.KEVER.K", result.without.special$product_name))
-                    agent.sales$"Egyéb fűkeverék" = aggregateByCriteriaForVetomagForProvider(fukeverekek, agents, "^EGY.B$")
+                    agent.sales$"Egyéb vetőmag" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^EGY.B$")
                     agent.sales$BayerSeeds = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^BAYER SEEDS$")
                     agent.sales$KWS = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^KWS")
                     agent.sales$Limagrain = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^LIMAGRAIN")
@@ -289,7 +278,6 @@ AgentSales = function (connection) {
 
                     agent.sales$"Vetőmag összes" = agent.sales$"Gabonakutató" +
                         agent.sales$"Egyéb vetőmag" +
-                        agent.sales$"Egyéb fűkeverék" +
                         agent.sales$BayerSeeds +
                         agent.sales$KWS +
                         agent.sales$Limagrain +
@@ -396,13 +384,7 @@ AgentSales = function (connection) {
                         rws.vetomag = subset(result.without.special, grepl("^VET.MAG$", result.without.special$group_name))
                         aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^DUPONT", rws.vetomag$provider_name))
                         gabonakutato = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^GABONAKUTAT.", rws.vetomag$provider_name))
-						# We have to exclude products from "Egyéb vetőmag" that are in group "Vetőmag" and are at provider "EGYÉB" but their names begin with "* FŰKEVERÉK".
-						# The actual requirement is to exclude every Fűkeverék with 20 or 25 kg packaging but since every fűkeverék is in these big packages, it's enough to just exclude all of them.
-						nem.fukeverekek = subset(rws.vetomag, !grepl("^\\* F.KEVER.K", rws.vetomag$product_name))
-                        egyeb.vetomag = aggregateForSitesByAgent(nem.fukeverekek, sites, agent.name, grepl("^EGY.B$", nem.fukeverekek$provider_name))
-						fukeverekek = subset(rws.vetomag, grepl("^\\* F.KEVER.K", rws.vetomag$product_name))
-						# We add in a new line the previously excluded Fűkeverék products
-						egyeb.fukeverek = aggregateForSitesByAgent(fukeverekek, sites, agent.name, grepl("^EGY.B$", fukeverekek$provider_name))
+                        egyeb.vetomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^EGY.B$", rws.vetomag$provider_name))
                         KWS = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^KWS", rws.vetomag$provider_name))
                         bayerSeeds = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^BAYER SEEDS", rws.vetomag$provider_name))
                         limagrain = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^LIMAGRAIN", rws.vetomag$provider_name))
@@ -417,7 +399,6 @@ AgentSales = function (connection) {
                         kwizda.vetomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^KWIZDA", rws.vetomag$provider_name))
                         vetomag.osszes = gabonakutato +
                             egyeb.vetomag +
-                            egyeb.fukeverek +
                             KWS +
                             bayerSeeds + 
                             limagrain +
@@ -463,7 +444,7 @@ drv = JDBC("org.firebirdsql.jdbc.FBDriver",
 		   args.jdbc.path,
            identifier.quote="`")
 c = dbConnect(drv, 
-			   paste("jdbc:firebirdsql://127.0.0.1:3050//databases/2016/", "dbs_2016.fdb?encoding=ISO8859_1", sep=""),
+			   paste("jdbc:firebirdsql://127.0.0.1:3050//databases/", "dbs_2017.fdb?encoding=ISO8859_1", sep=""),
 			   "SYSDBA", dbPassword)
 
 

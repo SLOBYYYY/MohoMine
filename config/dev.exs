@@ -47,4 +47,4 @@ config :moho_mine, :firebird,
   pwd: "masterkey",
   server: "localhost",
   port: 3050,
-  database: "/databases/dbs_bosz_2015.fdb"
+  database: "/databases/dbs_2017.fdb"
