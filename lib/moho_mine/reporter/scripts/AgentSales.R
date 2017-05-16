@@ -31,17 +31,20 @@ AgentSales = function (connection) {
 							"'adengo  1', ",
 							"'adengo  5', ",
 							"'afalon disp.  5', ",
+							"'alcedo 100 ec  1', ",
+							"'alcedo 100 ec  5', ",
 							"'antracol wg   6', ",
 							"'biathlon 4d', ",
 							"'biscaya  3', ",
 							"'bumper 25 ec  5', ", 
+							"'calypso 480 sc  1', ",
 							"'cambio          5', ",
 							"'capreno csomag', ",
 							"'colombus  1', ",
 							"'colombus  5', ",
 							"'coragen 20 sc  1', ",
 							"'coragen 20 sc  5', ",
-							"'curzate super df  5', ",
+							"'curzate super  5', ",
 							"'cuproxat        5', ",
 							"'cuproxat        20', ",
 							"'cyflamid 5 ew   1', ",
@@ -74,8 +77,9 @@ AgentSales = function (connection) {
 							"'pendigan 330 ec   5', ",
 							"'perenal  5',",
 							"'pictor  5', ",
-							"'prosaro               5', ",
 							"'prolectus  0,25', ",
+							"'propulse se 250  5', ",
+							"'prosaro               5', ",
 							"'pulsar          5', ",
 							"'pulsar plus  10', ",
 							"'pyrinex 48 ec   5',",
@@ -294,7 +298,7 @@ AgentSales = function (connection) {
                     agent.sales$BASF = aggregateForProvider(rws.without.vetomag, agents, "^BASF")
                     agent.sales$Bayer = aggregateForProvider(rws.without.vetomag, agents, "^BAYER CROPSCIENCE")
                     agent.sales$Belchim = aggregateForProvider(rws.without.vetomag, agents, "^BELCHIM")
-                    agent.sales$Cheminova = aggregateForProvider(rws.without.vetomag, agents, "^CHEMINOVA")
+                    agent.sales$"FMC Agro" = aggregateForProvider(rws.without.vetomag, agents, "^FMC-AGRO")
                     agent.sales$Chemtura = aggregateForProvider(rws.without.vetomag, agents, "^CHEMTURA$")
                     agent.sales$Dow = aggregateForProvider(rws.without.vetomag, agents, "^DOW")
                     agent.sales$Dupont = aggregateForProvider(rws.without.vetomag, agents, "^DUPONT")
@@ -307,7 +311,7 @@ AgentSales = function (connection) {
                         agent.sales$BASF +
                         agent.sales$Bayer +
                         agent.sales$Belchim +
-                        agent.sales$Cheminova +
+                        agent.sales$"FMC Agro" +
                         agent.sales$Chemtura +
                         agent.sales$Dow +
                         agent.sales$Dupont +
@@ -407,7 +411,7 @@ AgentSales = function (connection) {
                         BASF = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^BASF", rws.without.vetomag$provider_name))
                         bayer = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^BAYER CROPSCIENCE", rws.without.vetomag$provider_name))
                         belchim = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^BELCHIM", rws.without.vetomag$provider_name))
-                        cheminova = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^CHEMINOVA", rws.without.vetomag$provider_name))
+                        fmc_agro = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^FMC-AGRO", rws.without.vetomag$provider_name))
                         chemtura = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^CHEMTURA$", rws.without.vetomag$provider_name))
                         dow = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^DOW", rws.without.vetomag$provider_name))
                         dupont = aggregateForSitesByAgent(rws.without.vetomag, sites, agent.name, grepl("^DUPONT", rws.without.vetomag$provider_name))
@@ -420,7 +424,7 @@ AgentSales = function (connection) {
                             BASF +
                             bayer +
                             belchim +
-                            cheminova +
+                            fmc_agro +
                             chemtura +
                             dow +
                             dupont +
