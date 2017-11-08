@@ -23,7 +23,7 @@ defmodule MohoMine.PortConnector.Connector do
     receive do
       {^port, {:data, result}} ->
         result
-      after 120000 ->
+      after 300000 ->
         Logger.warn "A command timed out: \"#{command}\""
         :timeout
     end
