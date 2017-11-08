@@ -37,11 +37,11 @@
                     <%= form_for @conn, dashboard_path(@conn, :agent_report), [id: :agent_report_filter, name: :filter, method: :post, class: "form-inline"], fn f -> %>
                     <div class="form-group">
                       <%= label f, :from, "Mettől" %>
-                      <%= date_select f, :from, year: [options: 2010..2016], default: {@current_year, 1, 1}, class: "form-control" %>
+                      <%= date_select f, :from, year: [options: 2010..2020], default: {@current_year, 1, 1}, class: "form-control" %>
                     </div>
                     <div class="form-group">
                       <%= label f, :to, "Meddig" %>
-                      <%= date_select f, :to, year: [options: 2010..2016], default: {@current_year, 12, 31}, class: "form-control" %>
+                      <%= date_select f, :to, year: [options: 2010..2020], default: {@current_year, 12, 31}, class: "form-control" %>
                     </div>
                     <div class="form-group">
                       <%= submit "Mehet!", class: "btn btn-primary" %>
