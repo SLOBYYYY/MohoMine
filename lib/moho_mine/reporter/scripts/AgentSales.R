@@ -81,7 +81,7 @@ AgentSales = function (connection) {
 							"'propulse se 250  5', ",
 							"'prosaro               5', ",
 							"'pulsar          5', ",
-							"'pulsar plus  10', ",
+							"'pulsar plus  5', ",
 							"'pyrinex 48 ec   5',",
 							"'pyrinex supreme  5', ",
 							"'racer 25 ec     5', ",
@@ -323,7 +323,13 @@ AgentSales = function (connection) {
                     
                     agent.sales$"Gabonakutató" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^GABONAKUTAT.")
                     agent.sales$"Egyéb vetőmag" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^EGY.B$")
-                    agent.sales$BayerSeeds = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^BAYER SEEDS$")
+                    agent.sales$BayerSeeds = aggregateByCriteria(result.without.special, agents, (grepl("^VET.MAG$", result.without.special$group_name) &
+                    																			  (
+                    																			   grepl("^BAYER SEEDS$", result.without.special$provider_name) |
+                    																			   grepl("^BAYER CROPSCIENCE$", result.without.special$provider_name)
+                    																			   )
+                    																			  )
+                    )
                     agent.sales$KWS = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^KWS")
                     agent.sales$Limagrain = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^LIMAGRAIN")
                     agent.sales$Monsanto = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^MONSANT")
@@ -446,7 +452,12 @@ AgentSales = function (connection) {
                         gabonakutato = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^GABONAKUTAT.", rws.vetomag$provider_name))
                         egyeb.vetomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^EGY.B$", rws.vetomag$provider_name))
                         KWS = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^KWS", rws.vetomag$provider_name))
-                        bayerSeeds = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^BAYER SEEDS", rws.vetomag$provider_name))
+						bayerSeeds = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, 
+															  (
+															   grepl("^BAYER SEEDS$", result.without.special$provider_name) |
+															   grepl("^BAYER CROPSCIENCE$", result.without.special$provider_name)
+															   )
+															  )
                         limagrain = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^LIMAGRAIN", rws.vetomag$provider_name))
                         monsanto = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^MONSANT", rws.vetomag$provider_name))
                         martonvasar = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^MARTONV.S.R", rws.vetomag$provider_name))
