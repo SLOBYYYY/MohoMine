@@ -279,14 +279,7 @@ AgentSales = function (connection) {
                         aggregateByCriteria(result.without.special,
                                                            agents,
                                                            criteria = grepl("^EGY.B$", result.without.special$provider_name) &
-                                                                           (
-                                                                               !grepl("^M.TR.GYA$|^VET.MAG$", result.without.special$group_name) |
-                                                                               (
-                                                                                   grepl("^M.TR.GYA$", result.without.special$group_name) &
-                                                                                    !grepl("^MT|^YARA|^TIMAC|^CROPCARE", result.without.special$product_name)
-                                                                               )
-                                                                           )
-                                            )
+																	 !grepl("^M.TR.GYA|^VET.MAG$", result.without.special$group_name))
                     agent.sales$"F + FA + A + V + K + E" = agent.sales$"F + FA + A + V" + 
                         agent.sales$Kiemelt +
                         agent.sales$"Egyéb, nagy gyártóhoz nem köthető"
@@ -398,14 +391,7 @@ AgentSales = function (connection) {
                                                                 sites,
                                                                 agent.name,
                                                                 criteria = grepl("^EGY.B$", result.without.special$provider_name) &
-                                                                               (
-                                                                                   !grepl("^M.TR.GYA$|^VET.MAG$", result.without.special$group_name) |
-                                                                                   (
-                                                                                       grepl("^M.TR.GYA$", result.without.special$group_name) &
-                                                                                        !grepl("^MT|^YARA|^TIMAC|^CROPCARE", result.without.special$product_name)
-                                                                                   )
-                                                                               )
-                                                )
+																		  !grepl("^M.TR.GYA|^VET.MAG$", result.without.special$group_name))
                         ffaavke = ffaav + 
                             kiemelt +
                             misc
