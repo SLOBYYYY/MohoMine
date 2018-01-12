@@ -357,11 +357,11 @@ AgentSales = function (connection) {
                         agent.sales$"Dow vetőmag" +
                         agent.sales$"Kwizda vetőmag"
                     
+                    agent.sales$"Egyéb műtrágya alap" = aggregateByCriteria(result.without.special, agents, (grepl("^EGY.B$", result.without.special$provider_name) &
+																											 grepl("^M.TR.GYA ALAP$", result.without.special$group_name)))
                     agent.sales$"Egyéb műtrágya" = aggregateByCriteria(result.without.special, agents, (grepl("^EGY.B$", result.without.special$provider_name) &
-                                                                                 grepl("^M.TR.GYA$", result.without.special$group_name) &
-                                                                                 grepl("^MT|^YARA|^TIMAC|^CROPCARE", result.without.special$product_name) 
-                                                                                 ))
-                    agent.sales$"Műtrágya összes" = agent.sales$"Egyéb műtrágya"
+																										grepl("^M.TR.GYA$", result.without.special$group_name)))
+                    agent.sales$"Műtrágya összes" = agent.sales$"Egyéb műtrágya alap" + agent.sales$"Egyéb műtrágya"
                     agent.sales$"Összes" = agent.sales$"Növényvédőszer összes" +
                         agent.sales$"Vetőmag összes" +
                         agent.sales$"Műtrágya összes"
@@ -484,12 +484,12 @@ AgentSales = function (connection) {
                             kwizda.vetomag
                         
                         agent.result$"Vetőmag" = vetomag.osszes
-                        agent.result$"Egyéb műtrágya" = aggregateForSitesByAgent(result.without.special, sites, agent.name,
-                                                                                 (grepl("^EGY.B$", result.without.special$provider_name) &
-                                                                                 grepl("^M.TR.GYA$", result.without.special$group_name) &
-                                                                                 grepl("^MT|^YARA|^TIMAC|^CROPCARE", result.without.special$product_name) 
-                                                                                 )
-                                                                             )
+
+
+                        agent.result$"Egyéb műtrágya alap" = aggregateForSitesByAgent(result.without.special, sites, agent.name, (grepl("^EGY.B$", result.without.special$provider_name) &
+																																  grepl("^M.TR.GYA ALAP$", result.without.special$group_name)))
+                        agent.result$"Egyéb műtrágya" = aggregateForSitesByAgent(result.without.special, sites, agent.name, (grepl("^EGY.B$", result.without.special$provider_name) &
+																															      grepl("^M.TR.GYA$", result.without.special$group_name)))
                         if (i==1) {
                             write.table(agent.name, filename, row.names=F, col.names=F)
                         } else {
