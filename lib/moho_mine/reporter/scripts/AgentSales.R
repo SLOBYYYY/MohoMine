@@ -24,83 +24,53 @@ AgentSales = function (connection) {
     if (class(connection) == "JDBCConnection") {
         localConnection = connection
         result = NULL
+        getSpecialRetailProductsList = function () {
+			list = paste("'aliette 80 wg   lev 15 g',",
+						 "'chorus 50 wg  0,2',",
+						 "'chorus 50 wg  1',",
+						 "'cyflamid 5 ew   0,02',",
+						 "'cyflamid 5 ew   0,1',",
+						 "'quadris         0,2',",
+						 "'ridomil gold mz 68 wg 0,25',",
+						 "'ridomil gold plus 42,5 wp 0,5',",
+						 "'sencor  amp  (10 ml)',",
+						 "'sencor   0,1',",
+						 "'teldor 500 sc   10 ml',",
+						 "'teldor 500 sc   0,1',",
+						 "'topas 100 ec  0,1',",
+						 "'topas 100 ec  1',",
+						 "'topas 100 ec  5x5ml amp',",
+						 "'vegesol eres      0,2',",
+						 "'vegesol eres      1'")
+		}
+        loadWholesaleSpecialProducts = function () {
+        	special.products = getSpecialRetailProductsList()
+			command = paste("select id_termek",
+							"from termek",
+							"where kiemelt = 1",
+							"and lower(termek.nev) not in (",
+							special.products,
+							")")
+            temp = dbGetQuery(localConnection, command)
+            colnames(temp) = c("id")
+            return(temp)
+		}
+        loadRetailSpecialProducts = function () {
+        	special.products = getSpecialRetailProductsList()
+			command = paste("select id_termek",
+							"from termek",
+							"where kiemelt = 1",
+							"and lower(termek.nev) in (",
+							special.products,
+							")")
+            temp = dbGetQuery(localConnection, command)
+            colnames(temp) = c("id")
+            return(temp)
+		}
         loadSpecialProducts = function () {
             command = paste("select id_termek",
                             "from termek",
-                            "where lower(termek.nev) in (",
-							"'adengo  1', ",
-							"'adengo  5', ",
-							"'afalon disp.  5', ",
-							"'alcedo 100 ec  1', ",
-							"'alcedo 100 ec  5', ",
-							"'antracol wg   6', ",
-							"'biathlon 4d', ",
-							"'biscaya  3', ",
-							"'bumper 25 ec  5', ", 
-							"'calypso 480 sc  1', ",
-							"'cambio          5', ",
-							"'capreno csomag', ",
-							"'colombus  1', ",
-							"'colombus  5', ",
-							"'coragen 20 sc  1', ",
-							"'coragen 20 sc  5', ",
-							"'curzate super  5', ",
-							"'cuproxat        5', ",
-							"'cuproxat        20', ",
-							"'cyflamid 5 ew   1', ",
-							"'folpan 80 wdg   5', ",
-							"'fontelis 20 sc  1',",
-							"'galera sl   5', ",
-							"'galigan 240 ec  5', ",
-							"'inazuma  1', ",
-							"'kaiso eg  1', ",
-							"'karathane star  1', ",
-							"'karathane star  5',",
-							"'kentaur 5 g  25',",
-							"'kideka  5',",
-							"'laudis  5', ",
-							"'lingo  5', ",
-							"'mavrik 24 ew  5', ",
-							"'melody compact 49 wg 6', ",
-							"'mildicut  10',",
-							"'monsoon active  5', ",
-							"'montaflow sc  10', ",
-							"'mustang forte  1', ",
-							"'mustang forte  5', ",
-							"'mystic pro  5', ",
-							"'nimrod 25 ec    1',",
-							"'nuflon  5', ",
-							"'nurelle-d 500 ec 1', ",
-							"'nurelle-d 500 ec 5', ",
-							"'opera new  5', ",
-							"'osiris  5', ",
-							"'pendigan 330 ec   5', ",
-							"'perenal  5',",
-							"'pictor  5', ",
-							"'prolectus  0,25', ",
-							"'propulse se 250  5', ",
-							"'prosaro               5', ",
-							"'pulsar          5', ",
-							"'pulsar plus  5', ",
-							"'pyrinex 48 ec   5',",
-							"'pyrinex supreme  5', ",
-							"'racer 25 ec     5', ",
-							"'sekator od  1', ",
-							"'stabilan sl     10', ",
-							"'systhane 20 ew  1', ",
-							"'taltos+polyglycol  1,5+22,5', ",
-							"'taltos+polyglycol  25*(0,033+0,5)', ",
-							"'tango star      5', ",
-							"'teppeki 50 wg  2', ",
-							"'teppeki 50 wg  0,5', ",
-							"'trek p  5', ",
-							"'warrant 200 sl  1', ",
-							"'wing p  10', ",
-							"'zantara ec 216  5', ",
-							"'zoom 11 sc  1', ",
-							"'zoom 11 sc  0,25'",
-							") or ",
-							"lower(termek.nev) like 'bayer sz_l_ cs.'")
+                            "where kiemelt = 1")
             temp = dbGetQuery(localConnection, command)
             colnames(temp) = c("id")
             return(temp)
@@ -191,7 +161,7 @@ AgentSales = function (connection) {
             	data[which(data$customer_szallito != data$customer_szamla),"customer_differs"] = 1
             	data$agent_differs = rep(0, nrow(data))
             	data[which(data$agent_szallito != data$agent_szamla),"agent_differs"] = 1
-                colnames(data) = c("Dátum", "Szállító/Számla száma", "Termék neve", "Egységár (kerekített)", "Mennyiség", "Total (kerekített)", "Szolgáltató", "Termékcsoport", "Vevő", "Üzletkötő", "Kiállító telephely", "termek_id", "vevo_id", "Üzletkötő típusa", "Szállítólevél vevője", "Szállítólevél üzletkötője", "Számla vevője", "Számla üzletkötője", "Vevő különbözik", "Üzletkötő különbözik")
+                colnames(data) = c("Dátum", "Szállító/Számla száma", "Termék neve", "Egységár (kerekített)", "Mennyiség", "Total (kerekített)", "Szolgáltató", "Termékcsoport", "Vevő", "Üzletkötő", "Kiállító telephely", "termek_id", "vevo_id", "Üzletkötő típusa", "Szállítólevél vevője", "Szállítólevél üzletkötője", "Számla vevője", "Számla üzletkötője", "Kiemelt", "Vevő különbözik", "Üzletkötő különbözik")
                 return(data)
             },
             load = function (from, to) {
@@ -201,7 +171,7 @@ AgentSales = function (connection) {
                     "select szamla.datum, szamla.sorszam, termek.nev, round(szamlatetel.eladar) as \"eladar\", szamlatetel.mennyiseg, ",
                     "round(szamlatetel.eladar * szamlatetel.mennyiseg) as \"EladarSum\", ",
                     "forgalmazo.nev, csoport.nev, vevo.nev, uzletkoto.nev, telephelysync.nev, termek.id_termek, ",
-                    "vevo.id_vevo, 'UZLETKOTO-SZLEVEL', vevo.nev, uzletkoto.nev, vszamla.nev, uszamla.nev ",
+                    "vevo.id_vevo, 'UZLETKOTO-SZLEVEL', vevo.nev, uzletkoto.nev, vszamla.nev, uszamla.nev, termek.kiemelt ",
                     "from szamlatetel join  ",
                     "szamla on szamla.id_szamla = szamlatetel.id_szamla join ",
                     "kihivatkozas kh on kh.id_szamla = szamla.id_szamla join ",
@@ -214,14 +184,14 @@ AgentSales = function (connection) {
                     "uzletkoto on uzletkoto.id_uzletkoto = vevo.id_uzletkoto left join ",
                     "vevo vszamla on vszamla.id_vevo = szamla.id_vevo left join ",
                     "uzletkoto uszamla on uszamla.id_uzletkoto = vszamla.id_uzletkoto ",
-                    "where szamla.datum >='", from, "' and szamla.datum <='", to, "' ",
+                    "where szamla.datum >='", from, "' and szamla.datum <='", to, "' and szamla.type in (0, 2)",
                     "union all ",
                     #Ugyanaz mint az előző csak itt minden olyan számlát húzok be amihez nem tartozik szállítólevél. ",
                     #Itt az üzletkötőket a számlához tartozó vevő alapján számítom ",
                     "select szamla.datum, szamla.sorszam, termek.nev, round(szamlatetel.eladar) as \"eladar\", szamlatetel.mennyiseg, ",
                     "round(szamlatetel.eladar * szamlatetel.mennyiseg) as \"EladarSum\", ",
                     "forgalmazo.nev, csoport.nev, vevo.nev, uzletkoto.nev, telephelysync.nev, termek.id_termek, ",
-                    "vevo.id_vevo, 'UZLETKOTO-SZAMLA', null, null, vevo.nev, uzletkoto.nev ",
+                    "vevo.id_vevo, 'UZLETKOTO-SZAMLA', null, null, vevo.nev, uzletkoto.nev, termek.kiemelt ",
                     "from szamlatetel join  ",
                     "szamla on szamla.id_szamla = szamlatetel.id_szamla join ",
                     "telephelysync on telephelysync.id_telephelysync = szamla.id_orig_telephely join ",
@@ -230,7 +200,7 @@ AgentSales = function (connection) {
                     "forgalmazo on forgalmazo.id_forgalmazo = termek.id_forgalmazo join ",
                     "csoport on csoport.id_csoport = termek.id_csoport left join ",
                     "uzletkoto on uzletkoto.id_uzletkoto = vevo.id_uzletkoto ",
-                    "where szamla.datum >='", from, "' and szamla.datum <='", to, "' and ",
+                    "where szamla.datum >='", from, "' and szamla.datum <='", to, "' and szamla.type in (0, 2) and ",
                     "szamla.id_szamla not in ( ",
                         "select distinct id_szamla ",
                         "from kihivatkozas ",
@@ -245,7 +215,7 @@ AgentSales = function (connection) {
                     sep="")
                 
                 temp = dbGetQuery(localConnection, command)
-                colnames(temp) = c("date", "bill_num", "product_name", "price", "amount", "totalprice", "provider_name", "group_name", "customer_name", "agent_name", "original_site", "product_id", "customer_id", "agent_type", "customer_szallito", "agent_szallito", "customer_szamla", "agent_szamla")
+                colnames(temp) = c("date", "bill_num", "product_name", "price", "amount", "totalprice", "provider_name", "group_name", "customer_name", "agent_name", "original_site", "product_id", "customer_id", "agent_type", "customer_szallito", "agent_szallito", "customer_szamla", "agent_szamla", "kiemelt")
                 assign("result", temp, thisEnv)
                 #print("Data is loaded into memory")
             },
@@ -253,7 +223,9 @@ AgentSales = function (connection) {
                 if (is.null(result)) {
                     stop("Use \"load\" to load data first")
                 } else {
-                    special.products = loadSpecialProducts()
+                    special.products.all = loadSpecialProducts()
+                    special.wholesale.products = loadWholesaleSpecialProducts()
+                    special.retail.products = loadRetailSpecialProducts()
                     agents = data.frame("agent_name"=sort(unique(result$agent_name)))
                     agents = rbind(agents, data.frame("agent_name"="Összesen"))
                     agent.sales = data.frame("agent_name"=agents$agent_name)
@@ -267,9 +239,10 @@ AgentSales = function (connection) {
                         agent.sales$"Farmmix Alternatív" +
                         agent.sales$Agrosol +
                         agent.sales$Vetco
-                    agent.sales$Kiemelt = aggregateByCriteria(result, agents, criteria = (result$product_id %in% special.products$id))
-                    # Axe out the special products for further calculations
-                    result.without.special = result[-which(result$product_id %in% special.products$id),]
+                    agent.sales$Kiemelt = aggregateByCriteria(result, agents, criteria = (result$product_id %in% special.wholesale.products$id))
+                    agent.sales$"Kiemelt gazdabolti termékek" = aggregateByCriteria(result, agents, criteria = (result$product_id %in% special.retail.products$id))
+                    # Axe out the special products.all for further calculations
+                    result.without.special = result[-which(result$product_id %in% special.products.all$id),]
                     
                     # We filter all products that are:
                     #   - "Egyéb" is set as a provider
@@ -282,6 +255,7 @@ AgentSales = function (connection) {
 																	 !grepl("^M.TR.GYA|^VET.MAG$", result.without.special$group_name))
                     agent.sales$"F + FA + A + V + K + E" = agent.sales$"F + FA + A + V" + 
                         agent.sales$Kiemelt +
+						agent.sales$"Kiemelt gazdabolti termékek" +
                         agent.sales$"Egyéb, nagy gyártóhoz nem köthető"
                     
 					# We have to exclude VETŐMAG from the query
@@ -334,6 +308,8 @@ AgentSales = function (connection) {
                     agent.sales$"Syngenta vetőmag" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^SYNGENTA VET.MAG$")
                     agent.sales$"Dow vetőmag" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^DOW")
                     agent.sales$"Kwizda vetőmag" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^KWIZDA")
+                    agent.sales$"Maisadour Hungária Kft." = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^MAISADOUR")
+                    agent.sales$"Kiskunk Kutatóközpont Kft." = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^KISKUNK")
 
                     agent.sales$"Vetőmag összes" = agent.sales$"Gabonakutató" +
                         agent.sales$"Egyéb vetőmag" +
@@ -348,7 +324,9 @@ AgentSales = function (connection) {
                         agent.sales$"Sumi-Agro vetőmag" +
                         agent.sales$"Syngenta vetőmag" +
                         agent.sales$"Dow vetőmag" +
-                        agent.sales$"Kwizda vetőmag"
+                        agent.sales$"Kwizda vetőmag" +
+                        agent.sales$"Maisadour Hungária Kft." +
+                        agent.sales$"Kiskunk Kutatóközpont Kft."
                     
                     agent.sales$"Egyéb műtrágya alap" = aggregateByCriteria(result.without.special, agents, (grepl("^EGY.B$", result.without.special$provider_name) &
 																											 grepl("^M.TR.GYA ALAP$", result.without.special$group_name)))
@@ -365,8 +343,10 @@ AgentSales = function (connection) {
                 if (is.null(result)) {
                     stop("Use \"load\" to load data first")
                 } else {
-                    special.products = loadSpecialProducts()
-                    result.without.special = result[-which(result$product_id %in% special.products$id),]
+                    special.products.all = loadSpecialProducts()
+                    special.wholesale.products = loadWholesaleSpecialProducts()
+                    special.retail.products = loadRetailSpecialProducts()
+                    result.without.special = result[-which(result$product_id %in% special.products.all$id),]
                     agents = data.frame("agent_name"=sort(unique(result$agent_name)))
                     agents = rbind(agents, data.frame("agent_name"="Összesen"))
                     sites = data.frame("site"=sort(unique(result$original_site)))
@@ -378,14 +358,15 @@ AgentSales = function (connection) {
                         
                         farmmix = aggregateForSitesByAgent(result, sites, agent.name, criteria=(grepl("^FARMMIX KFT$", result$provider_name)))
                         farmmix.alternativ = aggregateForSitesByAgent(result, sites, agent.name, criteria=(grepl("^FARMMIX KFT ALT", result$provider_name)))
-                        kiemelt = aggregateForSitesByAgent(result, sites, agent.name, criteria=(result$product_id %in% special.products$id))
+                        kiemelt.wholesale = aggregateForSitesByAgent(result, sites, agent.name, criteria=(result$product_id %in% special.wholesale.products$id))
+                        kiemelt.retail = aggregateForSitesByAgent(result, sites, agent.name, criteria=(result$product_id %in% special.retail.products$id))
                         agrosol = aggregateForSitesByAgent(result, sites, grepl("AGROSOL", result$provider_name))
                         vetco = aggregateForSitesByAgent(result, sites, grepl("VETCO", result$provider_name))
                         ffaav = farmmix + 
                             farmmix.alternativ +
                             agrosol +
                             vetco
-                        result.without.special = result[-which(result$product_id %in% special.products$id),]
+                        result.without.special = result[-which(result$product_id %in% special.products.all$id),]
                         misc = 
                             aggregateForSitesByAgent(result.without.special,
                                                                 sites,
@@ -393,7 +374,8 @@ AgentSales = function (connection) {
                                                                 criteria = grepl("^EGY.B$", result.without.special$provider_name) &
 																		  !grepl("^M.TR.GYA|^VET.MAG$", result.without.special$group_name))
                         ffaavke = ffaav + 
-                            kiemelt +
+                            kiemelt.wholesale +
+                            kiemelt.retail +
                             misc
 
 						# We have to exclude VETŐMAG from the query
@@ -428,7 +410,8 @@ AgentSales = function (connection) {
                         
                         #Set the columns
                         agent.result$"Növszer összforgalom" = ffaavke + misc_pesticide
-                        agent.result$"Farmmix kiemelt" = kiemelt
+                        agent.result$"Farmmix kiemelt" = kiemelt.wholesale
+                        agent.result$"Farmmix kiemelt gazdabolti termékek" = kiemelt.retail
                         agent.result$"Farmmix Alternatív" = farmmix.alternativ
                         agent.result$Farmmix = farmmix
                         
@@ -454,6 +437,8 @@ AgentSales = function (connection) {
                         syngenta.vetomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^SYNGENTA VET.MAG$", rws.vetomag$provider_name))
                         dow.vetomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^DOW", rws.vetomag$provider_name))
                         kwizda.vetomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^KWIZDA", rws.vetomag$provider_name))
+                        maisadour.vetomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^MAISADOUR", rws.vetomag$provider_name))
+                        kiskunk.vetomag = aggregateForSitesByAgent(rws.vetomag, sites, agent.name, grepl("^KISKUNK", rws.vetomag$provider_name))
                         vetomag.osszes = gabonakutato +
                             egyeb.vetomag +
                             KWS +
@@ -467,7 +452,9 @@ AgentSales = function (connection) {
                             sumi.vegomag +
                             syngenta.vetomag +
                             dow.vetomag +
-                            kwizda.vetomag
+                            kwizda.vetomag +
+                            maisadour.vetomag +
+                            kiskunk.vetomag
                         
                         agent.result$"Vetőmag" = vetomag.osszes
 
@@ -501,7 +488,7 @@ drv = JDBC("org.firebirdsql.jdbc.FBDriver",
 		   args.jdbc.path,
            identifier.quote="`")
 c = dbConnect(drv, 
-			   paste("jdbc:firebirdsql://127.0.0.1:3050//databases/", "dbs_2017.fdb?encoding=ISO8859_1", sep=""),
+			   paste("jdbc:firebirdsql://127.0.0.1:3050//databases/", "dbs_2018.fdb?encoding=ISO8859_1", sep=""),
 			   "SYSDBA", dbPassword)
 
 
