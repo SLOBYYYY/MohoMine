@@ -85,8 +85,10 @@ AgentSales = function (connection) {
             colnames(temp) = c("customer_id", "agent_name")
             return(temp)
         }
-        removePhoneBills = function (data) {
-            return(data[-which(grepl(" HAVI (MOBIL|VEZET.KES) ?TEL", data$product_name)),])
+        removeNonCommercialSalesItems = function (data) {
+            # Exclude every phone, logistics, packaging or accounting related items
+            criteria = grepl("^TELEFON$|^LOG.SZTIKA$|^KISZEREL.S$|^P.NZ.GY$", data$group_name)
+            return(data[-which(criteria),])
         }
         imputeAgentName = function (data) {
             data.without.agents = is.na(data$agent_name)
@@ -157,6 +159,7 @@ AgentSales = function (connection) {
             },
             getResult = function () {
             	data = get("result", thisEnv)
+              data = removeNonCommercialSalesItems(data)
             	data$customer_differs = rep(0, nrow(data))
             	data[which(data$customer_szallito != data$customer_szamla),"customer_differs"] = 1
             	data$agent_differs = rep(0, nrow(data))
@@ -229,7 +232,7 @@ AgentSales = function (connection) {
                     agents = data.frame("agent_name"=sort(unique(result$agent_name)))
                     agents = rbind(agents, data.frame("agent_name"="Összesen"))
                     agent.sales = data.frame("agent_name"=agents$agent_name)
-                    result = removePhoneBills(result)
+                    result = removeNonCommercialSalesItems(result)
                     result = imputeAgentName(result)
                     agent.sales$Farmmix = aggregateByCriteria(result, agents, grepl("^FARMMIX KFT$", result$provider_name))
                     agent.sales$"Farmmix Alternatív" = aggregateByCriteria(result, agents, grepl("^FARMMIX KFT ALT", result$provider_name))
