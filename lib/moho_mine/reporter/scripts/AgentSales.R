@@ -25,11 +25,10 @@ AgentSales = function (connection) {
         localConnection = connection
         result = NULL
         getSpecialRetailProductsList = function () {
-			list = paste("'aliette 80 wg   lev 15 g',",
-						 "'chorus 50 wg  0,2',",
+			list = paste("'chorus 50 wg  0,2',",
 						 "'chorus 50 wg  1',",
-						 "'cyflamid 5 ew   0,02',",
-						 "'cyflamid 5 ew   0,1',",
+             "'ortus 5 sc      5ml amp',",
+             "'ortus 5 sc      0,05',",
 						 "'quadris         0,2',",
 						 "'ridomil gold mz 68 wg 0,25',",
 						 "'ridomil gold plus 42,5 wp 0,5',",
