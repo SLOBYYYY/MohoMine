@@ -34,6 +34,8 @@ AgentSales = function (connection) {
 						 "'ridomil gold plus 42,5 wp 0,5',",
 						 "'sencor  amp  (10 ml)',",
 						 "'sencor   0,1',",
+             "'subtil  0,1',",
+             "'subtil  amp 10ml',",
 						 "'teldor 500 sc   10 ml',",
 						 "'teldor 500 sc   0,1',",
 						 "'topas 100 ec  0,1',",
