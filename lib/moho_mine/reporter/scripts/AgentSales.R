@@ -107,6 +107,11 @@ AgentSales = function (connection) {
             criteria = grepl("^FARMMIX KFT CSOMAGOL..ZEM$|^CSOMAGOL.ANYAG FARMMIX KFT$|^FARMMIX KFT LOGISZTIKA$|^FARMMIX KFT P.NZ.GY$|^TELEFON$", data$provider_name)
             return(data[-which(criteria),])
         }
+        removeOwnCompanies = function (data) {
+            # Exclude all the records where the customers(!) are our own subsidiary company
+            criteria = grepl("^AGRO-ADVICE KFT.$|^FARMMIX-AGRO KFT$|^FARMMIX-INVEST KFT.$|^FDM TRADE KFT.$|^GRAVISO KFT.$|^MMDL KFT.$|^PMS HUNGARY KFT.$|^SZAMOSMENTI ALMATERMEL. MEZ.GAZDAS.GI SZ.VETKEZET$|^SZAMOSMENTI CSOMAGOL. KFT.$", data$customer_name)
+            return(data[-which(criteria),])
+        }
         imputeAgentName = function (data) {
             data.without.agents = is.na(data$agent_name)
             customer.ids.with.no.agents = unique(data[data.without.agents, 'customer_id'])
@@ -253,6 +258,7 @@ AgentSales = function (connection) {
                     result = removeNonCommercialSalesItems(result)
                     result = removeNonCommercialProviders(result)
                     result = imputeAgentName(result)
+                    result = removeOwnCompanies(result)
                     agent.sales$Farmmix = aggregateByCriteria(result, agents, grepl("^FARMMIX KFT$", result$provider_name))
                     agent.sales$"Farmmix Alternatív" = aggregateByCriteria(result, agents, grepl("^FARMMIX KFT ALT", result$provider_name))
                     agent.sales$Agrosol = aggregateByCriteria(result, agents, grepl("AGROSOL", result$provider_name))
