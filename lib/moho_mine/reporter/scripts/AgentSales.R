@@ -226,7 +226,7 @@ AgentSales = function (connection) {
                     "forgalmazo on forgalmazo.id_forgalmazo = termek.id_forgalmazo join ",
                     "csoport on csoport.id_csoport = termek.id_csoport left join ",
                     "uzletkoto on uzletkoto.id_uzletkoto = vevo.id_uzletkoto ",
-                    "where szamla.datum >='", from, "' and szamla.datum <='", to, "' and szamla.type in (0, 2) and ",
+                    "where szamla.datum >='", from, "' and szamla.datum <='", to, "' and szamla.type in (0, 2) and (",
                     "szamla.id_szamla not in ( ",
                         "select distinct id_szamla ",
                         "from kihivatkozas ",
@@ -237,7 +237,7 @@ AgentSales = function (connection) {
                         "from kihivatkozas left join ",
                         "szlevel on szlevel.id_szlevel = kihivatkozas.id_szlevel ",
                         "where szlevel.sorszam is null",
-                    ") ",
+                    ")) ",
                     sep="")
                 
                 temp = dbGetQuery(localConnection, command)
