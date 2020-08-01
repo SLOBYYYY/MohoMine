@@ -552,7 +552,7 @@ drv = JDBC("org.firebirdsql.jdbc.FBDriver",
 		   args.jdbc.path,
            identifier.quote="`")
 c = dbConnect(drv, 
-			   paste("jdbc:firebirdsql://127.0.0.1:3050//databases/", "dbs_2019.fdb?encoding=ISO8859_1", sep=""),
+			   paste("jdbc:firebirdsql://127.0.0.1:3050//databases/", "dbs_2020.fdb?encoding=ISO8859_1", sep=""),
 			   "SYSDBA", dbPassword)
 
 
