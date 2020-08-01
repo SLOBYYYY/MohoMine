@@ -274,10 +274,12 @@ AgentSales = function (connection) {
                     result = removeOwnCompanies(result)
                     agent.sales$Farmmix = aggregateByCriteria(result, agents, grepl("^FARMMIX KFT$", result$provider_name))
                     agent.sales$"Farmmix Alternatív" = aggregateByCriteria(result, agents, grepl("^FARMMIX KFT ALT", result$provider_name))
-                    agent.sales$Agrosol = aggregateByCriteria(result, agents, grepl("AGROSOL", result$provider_name))
-                    agent.sales$Vetco = aggregateByCriteria(result, agents, grepl("VETCO", result$provider_name))
-                    agent.sales$"F + FA + A + V" = agent.sales$Farmmix +
+                    agent.sales$FDM = aggregateByCriteria(result, agents, grepl("^FDM TRADE KFT$", result$provider_name))
+                    agent.sales$Agrosol = aggregateByCriteria(result, agents, grepl("^AGROSOL", result$provider_name))
+                    agent.sales$Vetco = aggregateByCriteria(result, agents, grepl("^VETCO", result$provider_name))
+                    agent.sales$"F + FA + DP + A + V" = agent.sales$Farmmix +
                         agent.sales$"Farmmix Alternatív" +
+                        agent.sales$FDM +
                         agent.sales$Agrosol +
                         agent.sales$Vetco
                     agent.sales$Kiemelt = aggregateByCriteria(result, agents, criteria = (result$product_id %in% special.wholesale.products$id))
@@ -294,7 +296,7 @@ AgentSales = function (connection) {
                                                            agents,
                                                            criteria = grepl("^EGY.B$", result.without.special$provider_name) &
 																	 !grepl("^M.TR.GYA|^VET.MAG$", result.without.special$group_name))
-                    agent.sales$"F + FA + A + V + K + E" = agent.sales$"F + FA + A + V" + 
+                    agent.sales$"F + FA + DP + A + V + K + E" = agent.sales$"F + FA + DP + A + V" + 
                         agent.sales$Kiemelt +
 						agent.sales$"Kiemelt gazdabolti termékek" +
                         agent.sales$"Egyéb, nagy gyártóhoz nem köthető"
@@ -327,7 +329,7 @@ AgentSales = function (connection) {
                         agent.sales$Nufarm +
                         agent.sales$"Sumi-Agro növényvédőszer" +
                         agent.sales$"Syngenta növényvédőszer"
-                    agent.sales$"Növényvédőszer összes" = agent.sales$"F + FA + A + V + K + E" + agent.sales$"Egyéb növényvédőszer"
+                    agent.sales$"Növényvédőszer összes" = agent.sales$"F + FA + DP + A + V + K + E" + agent.sales$"Egyéb növényvédőszer"
                     
                     agent.sales$"Gabonakutató" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^GABONAKUTAT.")
                     agent.sales$"Egyéb vetőmag" = aggregateByCriteriaForVetomagForProvider(result.without.special, agents, "^EGY.B$")
