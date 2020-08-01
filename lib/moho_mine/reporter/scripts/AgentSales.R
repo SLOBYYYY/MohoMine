@@ -68,12 +68,13 @@ AgentSales = function (connection) {
 		}
         loadRetailSpecialProducts = function () {
         	special.products = getSpecialRetailProductsList()
-			command = paste("select id_termek",
-							"from termek",
-							"where kiemelt = 1",
-							"and lower(termek.nev) in (",
+			command = paste("select t.id_termek",
+							"from termek t join",
+              "     forgalmazo f on f.id_forgalmazo = t.id_forgalmazo",
+							"where t.kiemelt = 1",
+							"and lower(t.nev) in (",
 							special.products,
-							")")
+							") or f.nev like 'SYNGENTA KISKISZEREL.S'")
             temp = dbGetQuery(localConnection, command)
             colnames(temp) = c("id")
             return(temp)
