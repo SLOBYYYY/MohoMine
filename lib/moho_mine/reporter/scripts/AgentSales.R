@@ -258,6 +258,19 @@ AgentSales = function (connection) {
                     result = removeNonCommercialSalesItems(result)
                     result = removeNonCommercialProviders(result)
                     result = imputeAgentName(result)
+
+                    #Precalculate own company sales before removing them
+                    own.companies$"Agro-Advice Kft." = aggregateByCriteria(result, agents, grepl("^AGRO-ADVICE KFT.$", result$customer_name))
+                    own.companies$"Farmmix-Agro Kft" = aggregateByCriteria(result, agents, grepl("^FARMMIX-AGRO KFT$", result$customer_name))
+                    own.companies$"Farmmix-Invest Kft" = aggregateByCriteria(result, agents, grepl("^FARMMIX-INVEST KFT.$", result$customer_name))
+                    own.companies$"Fdm Trade Kft." = aggregateByCriteria(result, agents, grepl("^FDM TRADE KFT.$", result$customer_name))
+                    own.companies$"Graviso Kft." = aggregateByCriteria(result, agents, grepl("^GRAVISO KFT.$", result$customer_name))
+                    own.companies$"MMDL Kft." = aggregateByCriteria(result, agents, grepl("^MMDL KFT.$", result$customer_name))
+                    own.companies$"Pms Hungary Kft." = aggregateByCriteria(result, agents, grepl("^PMS HUNGARY KFT.$", result$customer_name))
+                    own.companies$"Szamosmenti Almatermelő Mezőgazdasági Szövetkezet" = aggregateByCriteria(result, agents, grepl("^SZAMOSMENTI ALMATERMEL. MEZ.GAZDAS.GI SZ.VETKEZET$", result$customer_name))
+                    own.companies$"Szamosmenti Csomagoló Kft." = aggregateByCriteria(result, agents, grepl("^SZAMOSMENTI CSOMAGOL. KFT.$", result$customer_name))
+
+
                     result = removeOwnCompanies(result)
                     agent.sales$Farmmix = aggregateByCriteria(result, agents, grepl("^FARMMIX KFT$", result$provider_name))
                     agent.sales$"Farmmix Alternatív" = aggregateByCriteria(result, agents, grepl("^FARMMIX KFT ALT", result$provider_name))
@@ -361,6 +374,27 @@ AgentSales = function (connection) {
                     agent.sales$"Egyéb műtrágya" = aggregateByCriteria(result.without.special, agents, (grepl("^EGY.B$", result.without.special$provider_name) &
 																										grepl("^M.TR.GYA$", result.without.special$group_name)))
                     agent.sales$"Műtrágya összes" = agent.sales$"Egyéb műtrágya alap" + agent.sales$"Egyéb műtrágya"
+
+                    agent.sales$"Agro-Advice Kft." = own.companies$"Agro-Advice Kft."
+                    agent.sales$"Farmmix-Agro Kft" = own.companies$"Farmmix-Agro Kft"
+                    agent.sales$"Farmmix-Invest Kft" = own.companies$"Farmmix-Invest Kft"
+                    agent.sales$"Fdm Trade Kft." = own.companies$"Fdm Trade Kft."
+                    agent.sales$"Graviso Kft." = own.companies$"Graviso Kft."
+                    agent.sales$"MMDL Kft." = own.companies$"MMDL Kft."
+                    agent.sales$"Pms Hungary Kft." = own.companies$"Pms Hungary Kft."
+                    agent.sales$"Szamosmenti Almatermelő Mezőgazdasági Szövetkezet" = own.companies$"Szamosmenti Almatermelő Mezőgazdasági Szövetkezet"
+                    agent.sales$"Szamosmenti Csomagoló Kft." = own.companies$"Szamosmenti Csomagoló Kft."
+
+                    agent.sales$"Saját cégek összesen" = 
+                      agent.sales$"Agro-Advice Kft." +
+                      agent.sales$"Farmmix-Agro Kft" +
+                      agent.sales$"Farmmix-Invest Kft" +
+                      agent.sales$"Fdm Trade Kft." +
+                      agent.sales$"Graviso Kft." +
+                      agent.sales$"MMDL Kft." +
+                      agent.sales$"Pms Hungary Kft." +
+                      agent.sales$"Szamosmenti Almatermelő Mezőgazdasági Szövetkezet"
+
                     agent.sales$"Összes" = agent.sales$"Növényvédőszer összes" +
                         agent.sales$"Vetőmag összes" +
                         agent.sales$"Műtrágya összes"
