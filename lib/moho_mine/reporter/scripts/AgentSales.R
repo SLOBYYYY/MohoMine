@@ -260,6 +260,7 @@ AgentSales = function (connection) {
                     result = imputeAgentName(result)
 
                     #Precalculate own company sales before removing them
+                    own.companies = agent.sales[FALSE,]
                     own.companies$"Agro-Advice Kft." = aggregateByCriteria(result, agents, grepl("^AGRO-ADVICE KFT.$", result$customer_name))
                     own.companies$"Farmmix-Agro Kft" = aggregateByCriteria(result, agents, grepl("^FARMMIX-AGRO KFT$", result$customer_name))
                     own.companies$"Farmmix-Invest Kft" = aggregateByCriteria(result, agents, grepl("^FARMMIX-INVEST KFT.$", result$customer_name))
