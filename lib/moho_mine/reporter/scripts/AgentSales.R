@@ -131,15 +131,15 @@ AgentSales = function (connection) {
                                          list(data$agent_name),
                                          function (x) { round(sum(x),0)})
             colnames(aggregated.sales) = c("agent_name", "sum")
-			full.total = sum(aggregated.sales$sum)
-			tempresult = merge(agents, aggregated.sales, by="agent_name", all.x=T)
-			# I had issues here. merge() works in weird ways with the row for "Összesen":
-			# If "Összesen" was already added to the aggregated.sales with a value, merge will sort it too, forcing it after letter "O" alphabetically
-			# tempresult will contain "Összesen" now but it will be at the end of the dataframe since it's value is N/A!
-			tempresult[which(tempresult$agent_name=="Összesen"),"sum"] = full.total
-			merged = tempresult[,2]
-			merged[is.na(merged)] = 0
-			return(merged)
+            full.total = sum(aggregated.sales$sum)
+            tempresult = merge(agents, aggregated.sales, by="agent_name", all.x=T)
+            # I had issues here. merge() works in weird ways with the row for "Összesen":
+            # If "Összesen" was already added to the aggregated.sales with a value, merge will sort it too, forcing it after letter "O" alphabetically
+            # tempresult will contain "Összesen" now but it will be at the end of the dataframe since it's value is N/A!
+            tempresult[which(tempresult$agent_name=="Összesen"),"sum"] = full.total
+            merged = tempresult[,2]
+            merged[is.na(merged)] = 0
+            return(merged)
         }
         aggregateForSitesByAgent = function (data, sites, agent_name, criteria = NULL) {
             localData = data
