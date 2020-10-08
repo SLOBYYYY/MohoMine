@@ -99,8 +99,8 @@ AgentSales = function (connection) {
         }
         removeNonCommercialSalesItems = function (data) {
             # Exclude every phone, logistics, packaging or accounting related items
-            criteria = grepl("^TELEFON$|^LOG.SZTIKA$|^KISZEREL.S$|^P.NZ.GY$", data$group_name)
-            return(data[-which(criteria),])
+            criteria = !grepl("^TELEFON$|^LOG.SZTIKA$|^KISZEREL.S$|^P.NZ.GY$|^RAKLAP$", data$group_name) & !grepl("^KUPONKEDVEZM.NY J.V..R.SA", data$product_name)
+            return(data[which(criteria),])
         }
         removeNonCommercialProviders = function (data) {
             # Exclude every provider that is not related to commerce
