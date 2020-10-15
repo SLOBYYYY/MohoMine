@@ -292,7 +292,7 @@ AgentSales = function (connection) {
                     #   - "Egyéb" is set as a provider
                     #   - Is not "Műtrágya" or not "Vetőmag"
                     #   - Is "Műtrágya" but doesn't start with MT, Yara, Timac or Cropcare
-                    agent.sales$"Egyéb, nagy gyártóhoz nem köthető" = 
+                    agent.sales$"Egyéb nagy gyártóhoz nem köthető" = 
                         aggregateByCriteria(result.without.special,
                                                            agents,
                                                            criteria = grepl("^EGY.B$", result.without.special$provider_name) &
@@ -300,7 +300,7 @@ AgentSales = function (connection) {
                     agent.sales$"F + FA + DP + A + V + K + E" = agent.sales$"F + FA + DP + A + V" + 
                         agent.sales$Kiemelt +
 						agent.sales$"Kiemelt gazdabolti termékek" +
-                        agent.sales$"Egyéb, nagy gyártóhoz nem köthető"
+                        agent.sales$"Egyéb nagy gyártóhoz nem köthető"
                     
 					# We have to exclude VETŐMAG from the query
 					rws.without.vetomag = subset(result.without.special, !grepl("^VET.MAG$", result.without.special$group_name))
