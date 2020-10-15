@@ -563,7 +563,7 @@ as$load(args.from, args.to)
 agent.sales.by.category = as$report()
 agent.result = as$getResult()
 
-write.csv(t(agent.sales.by.category), args.agent.sales.by.category.file, col.names=F)
+write.csv(t(agent.sales.by.category), args.agent.sales.by.category.file, col.names=F, quote=F)
 as$exportAgentDataBySite(args.agent.sales.by.site.file)
 write.csv(agent.result, args.full.data.file)
 success = dbDisconnect(conn = c)
